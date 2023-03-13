@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VisualStudioProject ProjectType="typeDynamicLibrary" ProjectCreator="Intel Fortran" Keyword="Dll" Version="11.0" ProjectIdGuid="{480A7B65-821E-447E-A9E2-A5D1AE389052}" SccProjectName="SAK" SccLocalPath="SAK" SccAuxPath="SAK" SccProvider="SAK">
+<VisualStudioProject ProjectType="typeDynamicLibrary" ProjectCreator="Intel Fortran" Keyword="Dll" Version="11.0" ProjectIdGuid="{480A7B65-821E-447E-A9E2-A5D1AE389052}">
 	<Platforms>
 		<Platform Name="Win32"/>
 		<Platform Name="x64"/></Platforms>
