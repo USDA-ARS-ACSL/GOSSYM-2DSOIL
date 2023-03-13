@@ -1,0 +1,144 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "GOSSYM", "CottonPn\GOSSYM.vfproj", "{480A7B65-821E-447E-A9E2-A5D1AE389052}"
+EndProject
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "2DGOSSYM", "2DSOIL\2DGOSSYM.vfproj", "{05500875-9B63-45CA-B7D6-FD6A5240ED1A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{480A7B65-821E-447E-A9E2-A5D1AE389052} = {480A7B65-821E-447E-A9E2-A5D1AE389052}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GasExchanger", "CottonPn\DLL_Photosyn\GasExchanger.vcxproj", "{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Dennis_Dbg|Win32 = Dennis_Dbg|Win32
+		Dennis_Dbg|x64 = Dennis_Dbg|x64
+		Dennis_Dbg|x86 = Dennis_Dbg|x86
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+		SBtest|Win32 = SBtest|Win32
+		SBtest|x64 = SBtest|x64
+		SBtest|x86 = SBtest|x86
+		Test|Win32 = Test|Win32
+		Test|x64 = Test|x64
+		Test|x86 = Test|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Debug|Win32.ActiveCfg = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Debug|Win32.Build.0 = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Debug|x64.ActiveCfg = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Debug|x64.Build.0 = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Debug|x86.ActiveCfg = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Debug|x86.Build.0 = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Dennis_Dbg|Win32.ActiveCfg = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Dennis_Dbg|Win32.Build.0 = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Dennis_Dbg|x64.ActiveCfg = Debug|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Dennis_Dbg|x64.Build.0 = Debug|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Dennis_Dbg|x86.ActiveCfg = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Dennis_Dbg|x86.Build.0 = Debug|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Release|Win32.ActiveCfg = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Release|Win32.Build.0 = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Release|x64.ActiveCfg = Release|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Release|x64.Build.0 = Release|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Release|x86.ActiveCfg = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Release|x86.Build.0 = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.SBtest|Win32.ActiveCfg = SBtest|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.SBtest|Win32.Build.0 = SBtest|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.SBtest|x64.ActiveCfg = SBtest|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.SBtest|x64.Build.0 = SBtest|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.SBtest|x86.ActiveCfg = SBtest|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.SBtest|x86.Build.0 = SBtest|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Test|Win32.ActiveCfg = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Test|Win32.Build.0 = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Test|x64.ActiveCfg = Test|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Test|x64.Build.0 = Test|x64
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Test|x86.ActiveCfg = Release|Win32
+		{480A7B65-821E-447E-A9E2-A5D1AE389052}.Test|x86.Build.0 = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|Win32.Build.0 = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|x64.ActiveCfg = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|x64.Build.0 = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|x86.ActiveCfg = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|x86.Build.0 = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Dennis_Dbg|Win32.ActiveCfg = Dennis_Dbg|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Dennis_Dbg|Win32.Build.0 = Dennis_Dbg|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Dennis_Dbg|x64.ActiveCfg = Dennis_Dbg|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Dennis_Dbg|x86.ActiveCfg = Dennis_Dbg|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Dennis_Dbg|x86.Build.0 = Dennis_Dbg|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|Win32.ActiveCfg = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|Win32.Build.0 = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|x64.ActiveCfg = Release|x64
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|x64.Build.0 = Release|x64
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|x86.ActiveCfg = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|x86.Build.0 = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.SBtest|Win32.ActiveCfg = SBtest|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.SBtest|Win32.Build.0 = SBtest|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.SBtest|x64.ActiveCfg = SBtest|x64
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.SBtest|x64.Build.0 = SBtest|x64
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.SBtest|x86.ActiveCfg = SBtest|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.SBtest|x86.Build.0 = SBtest|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Test|Win32.ActiveCfg = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Test|Win32.Build.0 = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Test|x64.ActiveCfg = Test|x64
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Test|x64.Build.0 = Test|x64
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Test|x86.ActiveCfg = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Test|x86.Build.0 = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Debug|Win32.Build.0 = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Debug|x64.ActiveCfg = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Debug|x64.Build.0 = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Debug|x86.ActiveCfg = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Debug|x86.Build.0 = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Dennis_Dbg|Win32.ActiveCfg = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Dennis_Dbg|Win32.Build.0 = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Dennis_Dbg|x64.ActiveCfg = Debug|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Dennis_Dbg|x64.Build.0 = Debug|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Dennis_Dbg|x86.ActiveCfg = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Dennis_Dbg|x86.Build.0 = Debug|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Release|Win32.ActiveCfg = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Release|Win32.Build.0 = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Release|x64.ActiveCfg = Release|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Release|x64.Build.0 = Release|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Release|x86.ActiveCfg = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Release|x86.Build.0 = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.SBtest|Win32.ActiveCfg = SBtest|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.SBtest|Win32.Build.0 = SBtest|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.SBtest|x64.ActiveCfg = SBtest|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.SBtest|x64.Build.0 = SBtest|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.SBtest|x86.ActiveCfg = SBtest|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.SBtest|x86.Build.0 = SBtest|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Test|Win32.ActiveCfg = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Test|Win32.Build.0 = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Test|x64.ActiveCfg = Test|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Test|x64.Build.0 = Test|x64
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Test|x86.ActiveCfg = Release|Win32
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9}.Test|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A3DD2C20-58FB-4666-BC3A-57CBF81AC91F}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://arsmdbe3320dta:8080/tfs/plantmodel
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CottonPn\\DLL_Photosyn\\GasExchanger.vcxproj
+		SccProjectName1 = CottonPn/DLL_Photosyn
+		SccLocalPath1 = CottonPn\\DLL_Photosyn
+		SccProjectUniqueName2 = 2DSOIL\\2DGOSSYM.vfproj
+		SccProjectName2 = 2DSOIL
+		SccLocalPath2 = 2DSOIL
+		SccProjectUniqueName3 = CottonPn\\GOSSYM.vfproj
+		SccProjectName3 = CottonPn
+		SccLocalPath3 = CottonPn
+	EndGlobalSection
+EndGlobal

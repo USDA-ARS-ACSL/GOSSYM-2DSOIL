@@ -1,0 +1,48 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "2dsoil", "Soil Source\2dsoil.vfproj", "{05500875-9B63-45CA-B7D6-FD6A5240ED1A}"
+EndProject
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "Crop_C", "Crop_C\Crop_C.vfproj", "{C0B569FA-20AE-4433-978E-62586439472B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|Win32.Build.0 = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Debug|x64.ActiveCfg = Debug|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|Win32.ActiveCfg = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|Win32.Build.0 = Release|Win32
+		{05500875-9B63-45CA-B7D6-FD6A5240ED1A}.Release|x64.ActiveCfg = Release|Win32
+		{C0B569FA-20AE-4433-978E-62586439472B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C0B569FA-20AE-4433-978E-62586439472B}.Debug|Win32.Build.0 = Debug|Win32
+		{C0B569FA-20AE-4433-978E-62586439472B}.Debug|x64.ActiveCfg = Debug|x64
+		{C0B569FA-20AE-4433-978E-62586439472B}.Debug|x64.Build.0 = Debug|x64
+		{C0B569FA-20AE-4433-978E-62586439472B}.Release|Win32.ActiveCfg = Release|Win32
+		{C0B569FA-20AE-4433-978E-62586439472B}.Release|Win32.Build.0 = Release|Win32
+		{C0B569FA-20AE-4433-978E-62586439472B}.Release|x64.ActiveCfg = Release|x64
+		{C0B569FA-20AE-4433-978E-62586439472B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A3DD2C20-58FB-4666-BC3A-57CBF81AC91F}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 1
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://arsmdbe3320dta:8080/tfs/plantmodel
+		SccProjectUniqueName0 = Soil\u0020Source\\2dsoil.vfproj
+		SccProjectName0 = ../../../Maizsim/corn/2DSOIL\u0020for\u0020MaizSim_VS9.1
+		SccAuxPath0 = http://arsmdbe3320dta:8080/tfs/plantmodel
+		SccLocalPath0 = Soil\u0020Source
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+	EndGlobalSection
+EndGlobal

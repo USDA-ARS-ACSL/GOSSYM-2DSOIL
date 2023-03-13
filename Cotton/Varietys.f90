@@ -1,0 +1,30 @@
+ SUBROUTINE VARIETYS
+
+    use common_block
+
+    CHARACTER VDSCRIP*51
+
+120 FORMAT(A8)
+
+    OPEN(11,FILE=variety,FORM=FILFRM,STATUS='OLD',ERR=200)
+100 CONTINUE
+    READ(11,*,ERR=200,END=300) VDSCRIP
+    READ(11,120,ERR=200,END=300) VTYNAM
+    READ(11,*,ERR=200,END=300) CALBRT
+    VARITY(IVARTY) = VTYNAM
+    CLOSE(11)
+    RETURN
+
+200 CONTINUE
+    PRINTBUF=' error on read in variety file'
+    CALL WRITERR
+    CLOSE(11)
+    ABEND = .TRUE.
+    RETURN
+300 CONTINUE
+    PRINTBUF=' end-of-file while reading variety file'
+    CALL WRITERR
+    CLOSE(11)
+    ABEND = .TRUE.
+    RETURN
+    END

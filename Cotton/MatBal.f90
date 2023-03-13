@@ -1,0 +1,73 @@
+
+    SUBROUTINE MATBAL
+    !  **************************************************************
+    !  *                                                            *
+    !  *            MATERIALS BALANCE SUBROUTINE                    *
+    !  *                                                            *
+    !  **************************************************************
+    !  *  IN THIS SUBROUTINE, AN INVENTORY OF THE CARBOHYDRATE      *
+    !  *  AND NITROGEN IS MADE FOR DIAGNOSTIC PURPOSES.             *
+    !  *  CARBOHYDRATES PRODUCED IN PNET ARE ALLOCATED TO GROWING   *
+    !  *  POINTS IN GROWTH. IF THE DIFFERENCE OF AVAILABLE AND      *
+    !  *  ALLOCATED IS ZERO, THE CARBOHYDRATE BALANCE IS CORRECT.   *
+    !  *  IF THE DIFFERENCE IS NEGATIVE, MORE CARBOHYDRATE HAS      *
+    !  *  BEEN ALLOCATED THAN WHAT WAS PRODUCED. IF POSITIVE, NOT   *
+    !  *  ALL CARBOHYDRATE PRODUCED HAS BEEN ALLOCATED.             *
+    !  *  SIMILAR LOGIC IS USED FOR SOIL AND PLANT NITROGEN.        *
+    !  *  DEBUGING SHOULD BE DONE IF BALANCES ARE EITHER POSITIVE   *
+    !  *  OR NEGATIVE.                                              *
+    !  *                                                            *
+    !  **************************************************************
+
+    use common_block
+
+    ! CALCULATE CARBOHYDRATE BALANCE IN EACH ORGAN AND IN THE WHOLE
+    ! PLANT. UNITS ARE GMS/PLANT.
+
+    ! RUTBAL = ROOTS C BALANCE
+    ! SALBAL = STEM AND LEAF C BALANCE
+    ! FRUBAL = FRUIT C BALANCE
+    ! CHOBAL = IS WHOLE PLANT C BALANCE
+
+    RUTBAL = (SROOT + 0.2) - (ROOTWT + RUTOFF)
+    SALBAL = (SSTEM + SLEAF + 0.4) - (STEMWT + LEAFWT + LEFABS)
+    FRUBAL = (SQUAR + SBOLL) - (SQWT + PQFLR + GBOLWT + GBLOS + COTXX)
+    AVAIL  = SPN + WTDAY1
+    USED   = ROOTWT + STEMWT + GBOLWT + LEAFWT + SQWT   + COTXX +	  &
+        XTRAC  + GBLOS  + LEFABS + PQFLR  + RUTOFF + RESC
+    CHOBAL = AVAIL - USED
+
+    ! CALCULATE SOIL NITROGEN BALANCE. UNITS ARE LBS/ACRE
+    !
+    ! DAY1SN  = RESIDUAL AND/OR INITIAL SOIL N
+    ! ADDEEDN = ADDED N AS FERTILIZER
+    ! ORGN    = AVAILABLE N IN ORGANIC MATTER
+    ! SOILN   = SOIL N TODAY
+    ! UPTAKEN = N REMOVED BY PLANT FROM THE SOIL
+
+    AVAIL = DAY1SN + ADDEDN + ORGN
+    USED  = SOILN + UPTAKEN + (CUMNSOK/ROWSP/.011219)
+    SNBAL = AVAIL - USED
+
+    ! CALCULATE PLANT NITROGEN BALANCE. UNITS ARE MG N/GRM DRY MATTER.
+
+    AVAIL = DAY1PN + TNO3UP + TNH4UP + FOLIARN
+    USED  = ROOTN + STEMN + SLEAFN + SEEDN + BURRN + NLOSS
+    PNBAL = AVAIL - USED
+
+    ! CALCULATE WATER BALANCE. UNIT ARE MM
+
+    AVAIL  = TIH2OC + CUMRAN + SUBIRR
+    USED   = TH2O + CUMEP + CUMES + CUMSOK
+    H2OBAL = AVAIL - USED
+
+    ! CALCULATE PLANT WEIGHT AND DEAD WEIGHT FOR PLANT
+
+    PLANTW = ROOTWT + STEMWT + GBOLWT + LEAFWT + SQWT + XTRAC +	 &
+        COTXX + RESC
+    DEAD2DAY = LEFABS + PQFLR + GBLOS + RUTOFF - DEADWT
+    IF(DEAD2DAY.LT.0.) DEAD2DAY = 0.
+    DEADWT = LEFABS + PQFLR + GBLOS + RUTOFF
+
+    RETURN
+    END
