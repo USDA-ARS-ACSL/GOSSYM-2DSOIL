@@ -1,5 +1,4 @@
 
-
 CDT todo - need to take out weights and other input from the element geometry file.
 C I am inputting dummy variables for the weights, we can 
       Subroutine Carbon_Partitioning()
@@ -30,6 +29,7 @@ c     Real PDWR_TOTAL   !for debugging
 	Real Wl,Wa,Wr,Wb; !Weighting parameters for root growth in grid used in Root_grow_c 
 	integer ISink;        ! Determines mechanism of nitrogen uptake by root
       Real InitialRootCellArea
+      integer t1,t2
 c	0  'passive root mass uptake' no kinetics
 c    1   Plant regulation diffusive and convective uptake
 c    2  'convective diffusive uptake no plant regulation (Constant IMax)
@@ -84,7 +84,6 @@ C
       Do n=1,NumNP
         YRL(n)=0.0D0                          ! length of young root in soil cell cm (old version)
         RGCF(n)=0.0D0                         ! root growth reduction factor
-        RUTDEN(n)=0.0D0                       ! length density of old root in soil cell cm/cm^2 (old version)
         iFavRoot(n)=0.0D0
 cccz start to move the nodeArea to GRID_BND file
 cccz        nodeArea(n)=0.0D0
@@ -139,7 +138,7 @@ cccz Assume that RTWT is node based root mass (g)
       Total_Eor=0.0
       Total_Pcrs=0.0                              ! PCRS actual carbon rate  g day-1
       icount=0
-      !iCellCount=0
+      iCellCount=0
       RootsInitiated=0     
       xMin=1.E+32
       xMax=-1.E+32
@@ -151,7 +150,6 @@ cccz Assume that RTWT is node based root mass (g)
 c      do n=1,NumNP
 cccz RMassY has the unit g cm-2
 cccz So TotalRootWt is not a weight but a sum of "mass-density"
-cccz So TotalRootWt is not a weight but a sum of "mass-density"o
 c          TotalRootWt=TotalRootWt+RMassY(n)
 c      enddo
 
@@ -186,10 +184,7 @@ c      enddo
         !PSIRD: water potential in soil cell in the dawn (bar)
         !PSIS: Water potential of soil cell. (bar)
       Enddo
-    
-      
-      
-      
+
 c   EOMult is defined in Crop since it is a Plant variable
 c      EOMult=1.
 c      If(xBSTEM.le.xMin.or.xBSTEM.ge.xMax) EOMult=0.5
@@ -218,10 +213,7 @@ c value Yang 8/22/06
       SGTLT = 0.0D0                   
 11    continue                            !Till this is calculated only at the beginning of the simulation
 C
-
-      
 c  Routine calculations
-      
 C
 c     Cell variables
 c     This piece of code averages nodal values over cells and
@@ -266,33 +258,32 @@ CYAPEND
 c     EO : potential transpiration rate
 c     EO is in g/plant. Multiply g/plant x plant/m2 x 1 m2/10000 cm2 x rowsp
 c     EOR : = EO*ROWSP if the plant is not at the border of the soil slab,
-c           = 0.5 * EO*ROWSP, if the plant is at the left or right border.
-c      EOR = EO*poprow/rowsp*100*rowsp*EOMult/10000
-c        poprow*100/rowsp gives plants m-2
-c      ET_demand is units of grams m-2 day-1
+c     EOR : = 0.5 * EO*ROWSP, if the plant is at the left or right border.
+c     EOR = EO*poprow/rowsp*100*rowsp*EOMult/10000
+c     poprow*100/rowsp gives plants m-2
+c     ET_demand is units of grams m-2 day-1
 c     TPot is g plant-1 hr- poprow*100/Rowsp converts to g cm hr
 c     EoMult*rowsp/10000/24 converts to g slab-1 (rowsp * 1cm strip for the finite element domain)
-        !  EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transpiratation rate per slab
-      EOR=ET_demand*rowsp*eomult*1    !popslab=(100/rowsp)*(EOMult*rowsp/10000)   when New photosyntheis is used [g/slab/day] 
-                                      !  EOR=ET_demand!  EOR unit [g/slab/day]   WHen old version of Pnet
-  
+c     EOR = ET_demand*poprow*(100/rowsp)*(EOMult*rowsp/10000) ! potential transpiratation rate per slab
+      EOR=ET_demand*rowsp*eomult*1    
+c     popslab=(100/rowsp)*(EOMult*rowsp/10000)   when New photosyntheis is used [g/slab/day]
+c     EOR=ET_demand!  EOR unit [g/slab/day]   WHen old version of Pnet
       
-c      EOR = ET_demand
-c      PCRL = PCRL*12*poprow/rowsp*100*rowsp*EOMult/10000
-c      PCRQ = PCRQ*12*poprow/rowsp*100*rowsp*EOMult/10000
+c     EOR = ET_demand
+c     PCRL = PCRL*12*poprow/rowsp*100*rowsp*EOMult/10000
+c     PCRQ = PCRQ*12*poprow/rowsp*100*rowsp*EOMult/10000
       
-c   PCRL in MAIZESIM is in the unit g/plant/hour, so mulitply 24 first to convert it to g/plant/day
-c   then multiply it by plant/(m^2) to convert it to g/(m^2)/day
-c   finally multiply it by rowsp*1(cm) to convert it into the soil slab we are dealing with Yang 9/24/06
+c     PCRL in MAIZESIM is in the unit g/plant/hour, so mulitply 24 first to convert it to g/plant/day
+c     then multiply it by plant/(m^2) to convert it to g/(m^2)/day
+c     finally multiply it by rowsp*1(cm) to convert it into the soil slab we are dealing with Yang 9/24/06
              
 c     
 C     ---------- Taken form R U T G R O   of  G L Y C I M
 C
-C  CALCULATE SOIL MECHANICAL RESISTANCE TO ROOT GROWTH IN EACH CELL
-!C
-      !SPDWR=0
+C     CALCULATE SOIL MECHANICAL RESISTANCE TO ROOT GROWTH IN EACH CELL
+C
       
-      !Potential rate of increase of root dry weight in soil cell, g day-1. taking in to account the reduction in the root growth by resistance
+c     Potential rate of increase of root dry weight in soil cell, g day-1. taking in to account the reduction in the root growth by resistance
       DO n=1,NumNP   
           MECHR = 5.4*abs(psis(n))**0.25                              !PSIS: Water potential of soil cells, bar.
      &    *EXP(-10.58*(1.7 - BlkDn(MatNumN(n))))
@@ -313,48 +304,46 @@ C
       RGCF1 = ((TPRD(n)-MECHR)/2.0)-((PSIRD(n)-PSIS(n))/4.0)          !use root turgor pressure at dawn (TPRD) and soil water potential at dawn (PSIS)
 C
 C     CALCULATE PROPORTIONAL REDUCTION OF ROOT GROWTH CAUSED BY
-C     SOIL TEMPERATURE
+C     SOIL TEMPERATURE (using a beta function)
 C
-      RGCF2=1.0
-      IF (Tmpr(n).GE.33.0D0) THEN
-          RGCF2 = (Tmpr(n)/33.0D0)**(-1.66D0)
-      ELSE IF (Tmpr(n).LE.0.0) THEN
-          RGCF2 = 0.0
-      ELSE If (Tmpr(n).lt.18.0D0) THEN
-          RGCF2 = (Tmpr(n)/18.0D0)**(1.66D0)
-      ENDIF
-      
+        RGCF2=tempStress(Tmpr(n))
+        
+
 C
 C   CALCULATE PROPORTIONIAL REDUCTION OF ROOT GROWTH CAUSED BY
 C   PARTIAL PRESSURE OF SOIL OXYGEN
 C
-      RGCF3 = (g(n,2) - 0.02)*7.14   !gas
+        RGCF3= oxyStress(g(n,2)*ppm_to_ugGasCm3air(2)/10000.)
+        
+        t1=(RGCF3.lt.1.0)
+        
 cccz the distance effects
-      xDist = abs(x(n)-xBSTEM)
-      yDist = abs(y(n)-yBSTEM)
-      RGCF4=max(1.0D0-0.001*xDist,0.0D0)
-     !*max(1.0D0-0.0001*yDist,0.0D0)
+        xDist = abs(x(n)-xBSTEM)
+        yDist = abs(y(n)-yBSTEM)
+        RGCF4=max(1.0D0-0.001*xDist,0.0D0)
+     !     *max(1.0D0-0.0001*yDist,0.0D0)
 cccz this effect is turned off in the gas one
-
+        
 C
 C   CALCULATE PROPORTIONAL REDUCTION OF ROOT GROWTH FROM THE
 C   PHYSICAL CAUSE THAT IS MOST LIMITING
 C
 cccz Zhuangji: AD 
-       RGCF5=(1.0-AMIN1(1.0,RMassY(n)/0.03))
-      !RGCF5=(1.0-AMIN1(1.0,(RMassY(n)+RMassM(n))/0.02))
-      !  RGCF5=1.0D0
+c        RGCF5=(1.0-AMIN1(1.0,RMassY(n)/0.03))
+         RGCF5=(1.0-AMIN1(1.0,(RMassY(n)+RMassM(n))/0.02))
+         RGCF5=1.0D0
 C this one for nitrogen. Use the ratio between actual uptake of N and IMax
+    
+         dif=amax1(0.0,Conc(n,1)-CMin0(1))
+	   RGCF6 =  amax1(0.3,dif/ConstK(1))
+	   RGCF6 = AMIN1(1.0, RGCF6)
 
-      dif=amax1(0.0,Conc(n,1)-CMin0(1))    !conc(n,1): microgram/cm3
-      RGCF6 =  amax1(0.3,dif/ConstK(1))
-      RGCF6 = AMIN1(1.0, RGCF6)
-   
-      
-      
 c ccz zhuangji:AD removed the RGCF3 why? DT - O2 was not simulated 
 C dt need to do more testing for RGCF6, add later
-      RGCF(n) = AMIN1( RGCF1, RGCF2, RGCF3,RGCF4)
+        RGCF(n) = AMIN1(RGCF1, RGCF2, RGCF3, RGCF4)
+        
+        RGCF(n) = AMAX1(RGCF(n),0.0)
+        RGCF(n) = AMIN1(RGCF(n),1.0)
 
       RGCF(n) = AMAX1(RGCF(n),0.0)
       RGCF(n) = AMIN1(RGCF(n),1.0)
@@ -372,14 +361,14 @@ c  dt 03/18/11 testing the incorporation of area
             if ((isEmerged.lt.1).and.(isGerminated.gt.0)) RGCF(n)=1.0  !
 
 cccz only new root or the total root? Dt - use total root for now
-            ! PDWR(n)=(RMassY(n)+RMassM(n))*ALPM*RGCF(n)*nodeArea(n)
-           !PDWR (n)=(RootClass(n,1)+RootClass(n,2))*ALPM*RGCF(n)*nodeArea(n)
-            !PDWR: Potential rate of increase of root dry weight in soil cell [gday-1]
-            ! PDWR (n)=RMassY(n)*ALPM*RGCF(n)*nodeArea(n)
-            !ALPM: Potential relative old root growth rate [day-1]
-            !RMassY(n): Mass of young root in soil cell [g/cm2]
-          !  SPDWR=SPDWR+ PDWR (n) !SPDWR unit[g/slab]
-            !SPDWR: total potential root dry weight over all the cells g/day/cell for time step=step
+!PDWR(n)=(RMassY(n)+RMassM(n))*ALPM*RGCF(n)*nodeArea(n)
+!PDWR (n)=(RootClass(n,1)+RootClass(n,2))*ALPM*RGCF(n)*nodeArea(n)
+!PDWR: Potential rate of increase of root dry weight in soil cell [gday-1]
+!PDWR (n)=RMassY(n)*ALPM*RGCF(n)*nodeArea(n)
+!ALPM: Potential relative old root growth rate [day-1]
+!RMassY(n): Mass of young root in soil cell [g/cm2]
+!SPDWR=SPDWR+ PDWR (n) !SPDWR unit[g/slab]
+!SPDWR: total potential root dry weight over all the cells g/day/cell for time step=step
       ENDDO
      
       !calculate all the roots capable of growing
@@ -411,10 +400,10 @@ cccz only new root or the total root? Dt - use total root for now
      &    psis(n).lt.-1.0) then                           !based on the volumetric nitrogen content in the cell
               fulGro = pdwr(n)
               pdwr(n) = pdwr(n) * 0.7                     !decreasing the potential growth
-              redPotRootGrowth = redPotRootGrowth + (fulGro - pdwr(n))        !reduction in the potential change in the root weight due to nitrogen stress
+              redPotRootGrowth = redPotRootGrowth + (fulGro - pdwr(n))            !reduction in the potential change in the root weight due to nitrogen stress
           else
-              pdwr(n) = (pdwr(n) + redPotRootGrowth*0.10 )          !add 10 % of pdwcut
-              redPotRootGrowth = redPotRootGrowth * 0.90                      !reduction in the potential change in the root weight due to nitrogen stress
+              pdwr(n) = (pdwr(n) + redPotRootGrowth*0.10 )!add 10 % of pdwcut
+              redPotRootGrowth = redPotRootGrowth * 0.90  !reduction in the potential change in the root weight due to nitrogen stress
           endif
           pdwr(n)=pdwr(n)*ALPM*nodeArea(n)                !pdwr[g/cm2]*nodeArea[cm2]
           spdwr = spdwr + pdwr(n)                         !spdwr[g/slab]
@@ -466,7 +455,7 @@ C
 C    CALCULATE DAWN LEAF WATER POTENTIALS ***
 C
       IF (ITIME.EQ.IDAWN) THEN
-           !PSILD = -1.2
+c        PSILD = -2.0
 c since in the MAIZESIM model, the reference leaf water potential in the CGas_exchange::setleafpEffect
 c function is set to be -1.9, so the initial value of leaf water potential should be assigned a higher
 c value Yang 8/22/06
@@ -544,13 +533,18 @@ c convert MPa into bar, this is how we have 19.26//(LAI*rowsp)
      &         *0.02275*(24.5 + Tmpr(n))
              ELSE
              
-             WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
-     &        /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
-     &        +19.26/(LAI*ROWSP))
-    
+             WUPM(n)=0.0
+             if (RDenM(n).GT.0.0) then
+               WUPM(n)=(PSIS(n)-PSILT)/((SR(n)+RRRM+RVR(n))
+     &           /(nodeArea(n)*RDenM(n)*0.02275*(24.5+Tmpr(n)))
+     &           +19.26/(LAI*ROWSP))
+             endif
+             WUPN(n)=0.0
+             if (RDenY(n).GT.0.0) then
              WUPN(n)=(PSIS(n)-PSILT)/((SR(n)+RRRY+RVR(n))
      &        /(nodeArea(n)*RDenY(n)*0.02275*(24.5+Tmpr(n)))
      &         +19.26/(LAI*ROWSP))
+             endif
      
              END IF       
 
@@ -561,8 +555,6 @@ C  NOTE 10.17
           ENDIF
         ENDIF
  50   CONTINUE
-      
- 
 C
 C  CALCULATE GROWTH BY NEW ROOTS IF ROOTS GREW AT POTENTIAL
 C  RATE DURING PAST PERIOD. START WITH SOIL CELL WHERE CONDITIONS
@@ -570,6 +562,7 @@ C  ARE MOST FAVORABLE FOR GROWTH
 C
       PCRTS = 0.       ! potential root carbon use  g day-1
       WUPTS = 0.       ! new root water uptake carbon all to root   g day-1
+      WUPRS = 0.
       SW10 = 0
       DO 90, n=1,NumNP
         n1=iFavRoot(n)
@@ -580,15 +573,18 @@ C
 C   DETERMINE TOTAL WATER UPTAKE BY ALL NEW ROOTS AND WEIGHTED
 C   AVERAGE SOIL WATER POTENTIAL WHEN:
 C   I. ROOTS GET ALL THE CARBON TRANSLOCATED
-C      
+C
+        WUPT(n1)=0.0
         IF(LAI.EQ.0.0) Then
         WUPT(n1) = (((PSIS(n1) - PSILT)*DRL(n1))
      &   /(SR(n1) + RRRY + RVR(n1)))
      &   *0.02275*(24.5 + Tmpr(n1))
         Else
-        WUPT(n1)=(PSIS(n1)-PSILT)/((SR(n1)+RRRY+RVR(n1))
-     &     /(DRL(n1)*0.02275*(24.5+Tmpr(n1)))
-     &     +(19.26/(LAI*ROWSP)))
+          if (DRL(n1).GT.0.0) then
+            WUPT(n1)=(PSIS(n1)-PSILT)/((SR(n1)+RRRY+RVR(n1))
+     &        /(DRL(n1)*0.02275*(24.5+Tmpr(n1)))
+     &       +(19.26/(LAI*ROWSP)))
+          endif
         EndIF
 
         IF (WUPT(n1).LE.0.0) WUPT(n1) = 0.0
@@ -674,8 +670,7 @@ C   UPTAKE CAN BE MET WITHOUT SHOOT WATER POTENTIAL FALLING TO THE
 C   POINT WHERE THE SHOOT LOSES TURGOR AND STOPS GROWING
 C
       IF (EOR.LT.WUPDS) THEN                                      ! relatively small EOR
-        PSIL_ = PSISM - ((PSISM - PSILT)*EOR/(WUPMS + WUPRS))     !wupms= WUPM(n) + WUPN(n)
-c        SCF = 1.0
+        PSIL_ = PSISM - ((PSISM - PSILT)*EOR/(WUPMS + WUPRS))
          SGT = 1.0
 C
 C   POTENTIAL TRANSPIRATION RATE IS SUCH THAT THE DEMAND FOR WATER
@@ -754,7 +749,6 @@ C
       IF (TPL.LT.2.0) THEN
         SGTLI = 1.0 !SGTLI: Proportion of shoot growing time lost irretrievably because of ow turgor
         SGT = 0.0   ! SGT:Proportion of time for which shoot grows: limited by shoot turgor
-        SGT = 0.0   ! SGT:Proportion of time for which shoot grows: limited by shoot turgor
         PCRS = PCRQ
 C
 C   IF TURGOR PRESSURE IS DECREASING AND IS LESS THAN 5 BARS
@@ -778,45 +772,9 @@ C
         
       END IF 
 
-      !*-------------Average soil water potential [Median] --------------
-      nr=1
-      Do n=1, NumNP
-          ! If((RMassY(n).gt.1e-10). or.(RMassM(n).gt.1e-10))then
-              If((RMassY(n).gt.0). or.(RMassM(n).gt.0))then
-                  sortNoRootCells(nr)=(hNew(n)/1000.0D0)          !cm to bar
-                  IF (sortNoRootCells(nr) .LT. -15.0) then
-                      sortNoRootCells(nr) = -15.0
-                  end if
-                  nr=nr+1
-              end if
-          end do
-
-          !calculation of the median
-          NCR= nr-1
-          IF (NCR.GE.1.0)then
-              DO I=1,NCR-1
-                  DO J=1,NCR-1
-                      IF(sortNoRootCells(J) > sortNoRootCells(J+1)) THEN
-                          tempNCR=sortNoRootCells(J)
-                          sortNoRootCells(J)=sortNoRootCells(J+1)
-                          sortNoRootCells(J+1)=tempNCR
-                      END IF
-                  END DO
-              END DO
-
-              IF ((NCR/2*2) /= NCR) THEN
-                  medSoilPsi=sortNoRootCells((NCR+1)/2)
-              ELSE IF ((NCR/2*2) == NCR) THEN
-              EVEN= (sortNoRootCells(Ncr/2)+sortNoRootCells((NCR+2)/2))
-                  medSoilPsi=EVEN/2
-              END IF
-          else
-              medSoilPsi=0
-          end if
-      !*--------------------------------------
-     
-      psiAvg1=medSoilPsi                                                         !Median of the soil water potential in the root zone
-      
+!     Estimation of the leaf water potential as a function of 
+!     average root zone soil pressure head      
+      IF(psiAvg1.LT.-7.0) psiAvg1 = -7.0
       if(tDay.lt.25.) tDay = 25.
       !calculation of psil_ based on the equation used in the old GOSSYM
       !Psild is a function of temperature, avg. soil waterpotential in the root zone and solar radiation
@@ -927,4 +885,55 @@ C
       M=1
       RETURN
       END
+C 
+       Real Function oxyStress(O2)
 C
+CDT       function to simulate the effect of low oxygen content
+C  in flooded soils on root growth of aradopsis, it is from
+C van Dongen JT,et al.  Ann Bot. 2009 Jan;103(2):269-80.
+C  O2 is input as a percentage , 0 is full stress, 1 is no stress
+C  Using a MM equation
+C returns a number from 0 to 1
+       real O2,k, V, tmp
+       k=4.95
+       V=121.5
+       tmp=(V * O2)/(k + O2)
+       tmp=min(tmp,100.0)
+       tmp=max(tmp,0.0)
+       oxyStress=tmp/100.0
+       
+       RETURN
+       END
+       
+       Real Function TempStress(t)
+       
+      
+CDT    beta function, See Yin et al. (1995), Ag For Meteorol., Yan and Hunt (1999) AnnBot, SK
+       implicit none
+	 real t, R_max, t_opt, t_ceil,f, g, alpha
+       real t_base, beta
+       
+       t_base=5.0
+       beta=1.0
+       t_opt=29.1
+       t_ceil=40.0
+       R_max=1.0
+       
+       if((t.le.t_base).or.(t.ge.t_ceil)) then
+         TempStress=0.0
+         return
+       endif
+c   not sure this is necesssary, kind of a safety thing       
+       if ((t_ceil.le.t_opt).or.(t_opt.le.t_base)) then
+        TempStress=0.0
+        return
+       endif
+
+	f = (t - t_base) / (t_opt - t_base)
+	g = (t_ceil - t) / (t_ceil - t_opt)
+	alpha = beta*(t_opt - t_base) / (t_ceil - t_opt)
+      TempStress= R_max*(f**alpha)*(g**beta)
+      TempStress=max(0.0,TempStress)
+      TempStress=min(1.0,TempStress)
+      return
+      End
