@@ -131,7 +131,7 @@
      Double precision  Starter
      character WeatherFile*256, TimeFile*256, BiologyFile*256,&
         ClimateFile*256, NitrogenFile*256, SoluteFile*256,&
-        SoilFile*256,&
+        ParamGasFile*256,SoilFile*256,&
         ManagementFile*256,DripFile*256,&
         WaterFile*256, WaterBoundaryFile*256,&
         PlantGraphics*256,InitialsFile*256,  VarietyFile*256,&
@@ -140,9 +140,11 @@
         GeometryFile*256,SurfaceGraphics*256,&
         FluxGraphics*256,MassBalanceFile*256,&
         MassBalanceFileOut*256,LeafGraphics*256,&
+        OrganicMatterGraphics*256,&
         RunFile*256, MassBalanceRunoffFileOut*256,&
-        listfle*256,sumryfle*256,Variety*256,&
-        OrganicMatterGraphics*256
+        MulchFile*256, MassBalanceMulchFileOut*256,&
+        listfle*256,sumryfle*256,Variety*256 
+        
  
 	!==================================
      
@@ -203,14 +205,19 @@
     !==============================================
     !from public.ins
       Common / DataFilenames / Starter, WeatherFile, TimeFile, &
-                    BiologyFile,ClimateFile, NitrogenFile, SoluteFile,&
-                    SoilFile,ManagementFile,DripFile,WaterFile, &
-                    WaterBoundaryFile, PlantGraphics,InitialsFile,&
-                    VarietyFile,NodeGraphics,ElemGraphics,NodeGeomFile,&
-                    GeometryFile,SurfaceGraphics,FluxGraphics, &
-                    MassBalanceFile,MassBalanceFileOut,LeafGraphics,&
-                    RunFile, MassBalanceRunoffFileOut,listfle,sumryfle,&
-                    Variety,OrganicMatterGraphics
+               BiologyFile,ClimateFile, NitrogenFile, SoluteFile,&
+               ParamGasFile, SoilFile,& 
+               ManagementFile,DripFile,&
+               WaterFile, WaterBoundaryFile,& 
+               PlantGraphics,InitialsFile,VarietyFile,&
+               NodeGraphics,ElemGraphics,NodeGeomFile,&
+               GeometryFile,SurfaceGraphics,&
+               FluxGraphics, MassBalanceFile,&
+               MassBalanceFileOut, LeafGraphics,&
+               OrganicMatterGraphics,&
+               RunFile, MassBalanceRunoffFileOut,&
+               MulchFile, MassBalanceMulchFileOut,&
+               listfle,sumryfle,Variety
     !========================================================
       COMMON/ ARCOM /ABZ,ACELLDW,ACTIRRG,ACTRAIN,ADDEDN,ADPG(20), &
                      AGE(10,40,15),AGEABZ(10,40,15),AGEBOL(10,40,15), &

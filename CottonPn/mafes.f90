@@ -82,7 +82,7 @@
       cco2 = co2
       cVpd(ciTime) = vpd(iTime)                     !cvpd:water vapour pressure deficit
       cWind = wind                                  ![km/hour] cwind: wind for the day
-      cPsil_ = psil_                                ![bar] cpsil_minimum leaf water potential for the day 
+      cPsil_ = psilC                                ![bar] cpsil_minimum leaf water potential for the day 
       cLatude = latude
       cLareat = area*100                            !area is in [dm2], clareat: leaf area is in [cm2]
       cLai=lai                                      !leaf area index
@@ -155,7 +155,7 @@
             if (nShoot.eq.1)then                                        
             DayNum = emerge+iDay                                        !julian day
             iDay=iDay+1                                                 !starts at 1 on the day of emergence
-            psiAvg=psiAvg1
+            psiAvg=amax1(psiAvg1,-7.0)
             rootWt=totalRootWeight/popslab                                          ![gram/plant/day] rootwt: dry weightof all the living roots per plant
             CurrentNUptakeError=(NitrogeNUptake/popslab)- (NitroDemand/1.0e6/popslab)                !g/plant (nitrogen uptake is only for a day)
             CumulativeNUptakeError = CumulativeNUptakeError + CurrentNUptakeError                    !g/plant (unit is confusing (how is it used in plant regulation)
