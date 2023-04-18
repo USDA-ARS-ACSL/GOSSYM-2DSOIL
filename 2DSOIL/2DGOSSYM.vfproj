@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application - Converted from CVF" Version="11.0" ProjectIdGuid="{05500875-9B63-45CA-B7D6-FD6A5240ED1A}" >
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application - Converted from CVF" Version="11.0" ProjectIdGuid="{05500875-9B63-45CA-B7D6-FD6A5240ED1A}">
 	<Platforms>
 		<Platform Name="Win32"/>
 		<Platform Name="x64"/></Platforms>
@@ -12,7 +12,7 @@
 				<Tool Name="VFCustomBuildTool"/>
 				<Tool Name="VFPreLinkEventTool"/>
 				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool" CommandLine="echo $(targetpath)"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
 		<Configuration Name="Dennis_Dbg|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
 				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" LocalSavedScalarsZero="true" InitArrays="true" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
@@ -120,9 +120,9 @@
 				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
 			<FileConfiguration Name="Debug|Win32">
 				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Test|Win32">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
 			<FileConfiguration Name="Test|x64">
+				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
+			<FileConfiguration Name="Test|Win32">
 				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
 			<FileConfiguration Name="Release|x64">
 				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
