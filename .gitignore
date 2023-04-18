@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.u2d
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -63,6 +64,9 @@ artifacts/
 
 # StyleCop
 StyleCopReport.xml
+
+#project examples
+Test_Run/
 
 # Files built by Visual Studio
 *_i.c
