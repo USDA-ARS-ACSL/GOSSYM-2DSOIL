@@ -10,6 +10,7 @@
 *.userosscache
 *.sln.docstates
 *.u2d
+/2DSOIL/2DGOSSYM.u2d
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -352,3 +353,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
