@@ -26,7 +26,13 @@ C
 c     
 C
 CYAP  No Plant = No Root Activity
-      If((NShoot.eq.0).OR.(LAI<0.0001)) Return
+CDt setting all water sinks to 0 after this point. if another water 
+c   sink source is added later, this will have to be modified. now 
+c   we assume all water uptake is only by the plants.
+      If((NShoot.eq.0).OR.(LAI.lt.0.0001)) then
+        Sink(:)=0.0
+        Return 
+      endif
 CYAPEND
       
 
@@ -118,9 +124,9 @@ cE 07/05/2007 DT
         Sink(n)=AWUP(n)/nodeArea(n)
       Enddo
 
-      AWUPSS = AWUPSS + AWUPS*step   !Rate of water extraction from soil cells by roots,
+      AWUPSS = AWUPSS + AWUPS*step
       EORSCS = EORSCS + EORSCF*step
-      potential_T=potential_T + EOR*step      !Demand
+      potential_T=potential_T + EOR*step
       potential_T_EO=potential_T_EO+EO*step ! this is calculated from penman and adjusted for plant cover
       Total_Eor=Total_Eor+EOR
 c      Total_Pcrs=Total_Pcrs+PCRS/(poprow/100.)*step*2.0

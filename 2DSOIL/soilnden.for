@@ -1,12 +1,12 @@
       Subroutine SoilNitrogen()
 C new comment
+c second new comment
       Include 'public.ins'
       Include 'nitvar.ins'
       Include 'PuSurface.ins'
-      common /nitrog/ModNum
+      common /nitrog/ModNum, ThOld(NumNPD)
       Real*8 BCh,BNh, BCl,BNl,BCm,BNm,BNNH4,BNO3,BDENIT
-      Real*8 BCSinkh,BCSinkl,BCSinkm
-      
+	 
       Logical enough
        t=time
        If(lInput.eq.1) then
@@ -61,20 +61,22 @@ C new comment
         Do i=1,NumNP
         m=MatNumN(i)
         BCh=Ch_Old(i)
-        BCL=CL_Old(i)
-        BNL=NL_Old(i)
+c        BCL=CL_Old(i)
+c        BNL=NL_Old(i)
         BCm=Cm_Old(i)
         BNm=Nm_Old(i)
 C
 C               Soil water concentration is ug NO3 cm-3 of water  (multiply by water to get ug N per cm3 of soil) 
 C               The units of N in this routine are mg N liter-1 of soil. 
 C               The two are equivalent (both numerator and denominator differ by a factor of 1000)
-C                 
+C        
+C           Conc is input as ppm, then converted to ug/cm3 in solmov initialization
 cccz        BNO3=Conc(i,1)/Blkdn(m)*thNew(i) !conc(i,1) is ug NO3 per cm3 water so convert to ug/g soil (mg L-1)
-cccz we need to convert the unit of BNO3 as "ug N per g soil", therefore
+cccz we need to convert the unit of BNO3 as "ug N per cm3 volume", therefore
         BCL=CL(i)
         BNL=NL(i)
-        BNO3=Conc(i,1)/Blkdn(m)*thNew(i)*NO3mass_2_Nmass
+        BNO3=Conc(i,1)*thNew(i)*NO3mass_2_Nmass
+     &     +NO3_from_residue(i)
         NNO3_OLD(i)=BNO3
 C
         BNh=Nh(i)
@@ -180,12 +182,11 @@ C Incrementing nitrogen and carbon contents in compartments
           BNNH4 = NNH4_old(i) + Step *
      &             ( Q1 + Q3 + Q13 - Q4 - Q14 - Q6 )
           BNO3 = NNO3_old(i) + Step * 
-     &             ( Q6 - Q7 - Q5 - Q15) 
-          !Sink are the amount of C that moved out of humus, litter and manure pool, Here we dont include P12 and P2 because that C is moved to Humus pool
-          BCSinkh=CSinkhu_old(i)+Step * (- P1)  ! This is the cumulative c sink from Humus (ug C/g of soil???)
-          BCSinkl=CSinkli_old(i)+Step * (- P3) 
-          BCSinkm=CSinkma_old(i)+Step * (- P13)
+     &             ( Q6 - Q7 - Q5 - Q15)
+
+c rate is given as ug C per cm3 of area (mg per L) then P rate transfer to C mol
 C No negative values
+		g(i,1) = AMAX1(g(i,1),0.)							   
           BCh = AMAX1(BCh,0.)
           BNh = AMAX1(BNh,0.)
           BCl = AMAX1(BCl,0.)
@@ -193,10 +194,20 @@ C No negative values
           BCm = AMAX1(BCm,0.)
           BNm = AMAX1(BNm,0.)
           BNNH4 = AMAX1(BNNH4,0.)
-          BNO3  = AMAX1(BNO3,0.)                  !ug N/g soil
+          BNO3  = AMAX1(BNO3,0.)
           BDENIT=Denit_old(i)+Q7*Step
-         
-          ENDDO
+	 ENDDO
+
+
+csun (P1+P3+P13):[ugC/cm3 volume]/day
+csun Step:[day]
+csun Soilair(i):        [cm3air/cm3 volume]
+Csun  the release of C from organic matter (: ug C /cm3 soil day-1) to (ug CO2 cm-3 air)
+cDT removed BlkDn, it is not needed. 
+	   gsink_OM(i,1)=AMAX1(((P1+P3+P13-P45-P1415)*
+     &         44/(12))*(1/soilair(i)),0.0)
+     				 
+
 C End of iterations
           Ch(i) = BCh
           Nh(i) = BNh
@@ -206,17 +217,12 @@ C End of iterations
           Nm(i) = BNm
           Denit(i)=BDENIT
           NNH4(i) = BNNH4
-          
-          CSinkHu(i)=BCSinkh
-          CSinkLi(i)=BCSinkl
-          CSinkMa(i)=BCSinkm
-          
           NNO3_sol = BNO3
 cccz          Conc(i,1)=NNO3_sol/ThNew(i)*BlkDn(MatNumN(i))
 cccz the unit of NNO3 and BNO3 are "ug N per g soil", so need adjustment to calculate "Conc(i,1)"
-          Conc(i,1)=NNO3_sol/ThNew(i)*BlkDn(MatNumN(i))/NO3mass_2_Nmass !changed back to ug No3/cm3 of water
+          Conc(i,1)=NNO3_sol/ThNew(i)/NO3mass_2_Nmass
           TotNitO=Nh_old(i)+Nl_old(i)+Nm_Old(i)+NNO3_Old(i)+NNH4_old(i)
-          TotNit=Nh(i)+Nl(i)+Nm(i)+NNO3_sol+NNH4(i)+BDENIT
+          TotNit=Nh(i)+Nl(i)+Nm(i)+NNO3_sol+NNH4(i)  
           DTot=TotNit-TotNitO
           Nh_old(i)=Nh(i)
           Ch_old(i)=Ch(i)
@@ -226,16 +232,11 @@ cccz the unit of NNO3 and BNO3 are "ug N per g soil", so need adjustment to calc
           Cm_old(i)=Cm(i)
           Denit_old(i)=Denit(i)
           NNH4_old(i)=NNH4(i)
-          
-          CSinkHu_old(i)=CSinkHu(i)           !ug C/gsoil
-          CSinkLi_old(i)=CSinkLi(i)
-          CSinkMa_old(i)=CSinkMa(i)
-        
 cccz          NNO3_old(i)=amax1(0.,Conc(i,1)*ThNew(i))
 cccz     &                         /Blkdn(MatNumN(i))
 cccz the unit of NNO3 and BNO3 are "ug N per g soil", so need adjustment to calculate "Conc(i,1)"          
           NNO3_old(i)=amax1(0.,Conc(i,1)*ThNew(i))
-     &          /Blkdn(MatNumN(i))*NO3mass_2_Nmass
+     &          *NO3mass_2_Nmass
 CDT the following is OK if we sum BNO3 above          
 cdt          NNO3_old(i)=NNO3_sol
           ThOld(i)=ThNew(i)

@@ -28,7 +28,7 @@ C
       Read(40,*,ERR=10)
       im=im+1
       il=il+1
-      Read(40,*,ERR=10) NumSol  !number of solute
+      Read(40,*,ERR=10) NumSol
 c      im=im+1
 c      il=il+1
 c      Read(40,*,ERR=10)
@@ -312,7 +312,7 @@ C
                     cBnd=0.
                     If(CodeW(i).eq.-4.and.VarBW(j,1).gt.0.0)
      &                Radd=VarBW(j,1)*Width(j)*VarBS(j,jjj)
-                 
+                      If (Radd.ne.0.0) write(*,*) Radd
                   Endif
                   Goto 112
                 Endif

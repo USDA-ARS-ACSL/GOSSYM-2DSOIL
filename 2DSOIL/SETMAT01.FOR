@@ -17,12 +17,14 @@ C
      &                  BlkDn,hTemp,Explic,Theta,hTab1,hTabN,
      &                  hSat,ThSat,ThR, ThAvail,ThFull,
      &                  FracOM, FracSind, FracClay,
-     &                  TupperLimit, TLowerLimit,SoilFile)
+     !                  TupperLimit, TLowerLimit,soilair,SoilFile,
+     !                  RMassYc,RMassMc,NShoot,psiAvg1,
+     !                  ThAMin,ThATr,nodearea)
       Logical Explic
  !InitType allows us to input water content(w) or head (m) as an initial condition
       character SoilFile*132
       ! or character*1 InitType(5)
-      Real BldDn
+      Real BldDn,soilair,ThAMin,ThATr,nodearea
       Parameter (NTabD=100,NPar=13,NMatD=15)
       character*1, dimension(NMatD)::InitType
 
@@ -34,9 +36,15 @@ C
       Dimension hNew(NumNP),hOld(NumNP),MatNum(NumNP),
      !          Con(NumNP),Cap(NumNP),hTemp(NumNP),Theta(NumNP),
      !          thR(NMatD),hSat(NMatD),thSat(NMatD),ThAvail(NumNP),
-     !           ThFull(NMatD),BlkDn(NMatD),
+     !           ThFull(NMatD),BlkDn(NMatD),nodearea(NumNP),
      !          FracOM(NMatD), FracSind(NMatD), FracClay(NMatD),
-     !          TUpperLimit(NMatD),TLowerLimit(NMatD)
+     !          TUpperLimit(NMatD),TLowerLimit(NMatD),soilair(NumNP),
+     !          ThAMin (NMatD),ThATr(NMatD),
+     !          AvgHead(NMatD), AvgRootZoneWC(NMatD),TotalRM(NMatD),
+     !          WcRoootCells(NumNP,NMatD),NR(NMatD),
+     !          RMassMc(numnp) , RMassYc(numnp),Node_area(NMatD),
+     !           Rmass_mat(NMatD)
+       
 c   parameters:
 c         1  thr
 c         2  ths
@@ -50,6 +58,7 @@ c         9  thk
 c         10  BD
          
       If(lInput.eq.1) then
+        WcRoootCells(:,:)=0.0
         im=60
         il=0
       Open(40,file=SoilFile,status='old',ERR=16)
@@ -84,9 +93,7 @@ c calculate MP from water content if wc is given as an initial
              hNew(n)=(ThetaRel**(1/Vg_m))**(1/par(6,mm))-1
              hNew(n)=hNew(n)/par(5,mm) * (-1)
            endif
-        enddo
-        
-        
+         enddo
          Do n=1,NumNP
             hTemp(n) = hNew(n)  ! need to assign here since we are creating new values of hnew
             hOld(n)=hTemp(n)
@@ -101,7 +108,6 @@ c calculate MP from water content if wc is given as an initial
           
 CDT FracSind is sand + silt. Since we don't input silt, we 
 C     get it by difference
-C was an error - was using fracsind as 1-(sand+silt) which was wrong 
           BlkDn(M)=  Par(10,M)
           FracOM(M)   =Par(11,M)
 c          FracSind(M) =1.0-(Par(12,M)+Par(13,M))
@@ -109,7 +115,7 @@ c          FracClay(M) =Par(13,M)
           FracSind(M) = Par(12,M)+Par(13,M) 
           FracClay(M) = 1-Par(12,M)-Par(13,M) 
           TUpperLimit(M)=FQ(-100.0,Par(1,M))
-          TLowerLimit(M)=FQ(-150000.0,Par(1,M))   !Wilting point
+          TLowerLimit(M)=FQ(-150000.0,Par(1,M))
           ThFull(M)=TUpperLimit(M)-TLowerLimit(M)
           if (ThFull(M).lt.0) then
              iii=0;
@@ -122,6 +128,11 @@ c          FracClay(M) =Par(13,M)
             TheTab(i,M)=FQ(hTab(i),Par(1,M))
            
 13        Continue
+          
+          ThAMin(M)=0.01                           !Entrapped air, value can be estimated as a function of soil properties
+          ThATr(M)=0.00                           !Threshold air filled porosity below which diffusion does not occur, value can be estimated as a function of soil properties
+           
+          
 14      Continue
       Endif  !lInput=1
       Do 15 i=1,NumNP
@@ -145,7 +156,7 @@ c          FracClay(M) =Par(13,M)
         If(Explic) hi2=hi1
         If(hi2.ge.hSat(M)) then
           Ci=0
-          Ci=FC(hSat(M),PAR)
+          Ci=FC(hSat(M),PAR) !prevent capacitance from going to 0
           Ti=thSat(M)
         Else if(hi2.ge.(hTab(NTabD)+.04).and.hi2.le.hTab(1)) then
           iT=int((alog10(-hi2)-alh1)/dlh)+1
@@ -159,6 +170,10 @@ c          FracClay(M) =Par(13,M)
         Endif
         Cap(i)=Ci
         theta(i)=thR(M)+(Ti-thR(M))
+
+csb soil air  equals total porosity (or saturated water content)- current water content
+        soilair(i)= AMAX1(thSat(M)-theta(i),0.0001)
+	
 C calculate available water content
         If (theta(i).lt.TLowerLimit(M)) Then 
           ThAvail(i)=0;     
@@ -168,6 +183,84 @@ C calculate available water content
             ThAvail(i)=Amax1(ThAvail(i),0.0)
          End If          
 15    Continue
+      
+      
+!   Calculate the average pressure head in the soil with root
+!   This is for estimating leaf water potential in cotton leaf as a function of soil water potential      
+      If(NShoot.gt.0) then
+          nr(:)=0.0                                                         !estimate the number of cells considered in each soil material
+          nh=0.0
+          WcRoootCells(:,:)=0.0
+          TotalRM(:)=0.0
+          Rmass_mat(:)=0.0
+          RmassTotal=0.0
+          Do m=1, Nmat                                                    !loop through each soil material
+              Do n=1, NumNP                                               !loop through each nodes
+                  if(matnum(n).eq.m)then
+                      If((RMassYC(n).gt.1e-6).or.(RMassMC(n).gt.1e-6).
+     !                and.(hnew(n).gt.-15000.0))  then                    !Estimate cells with young or matured roots
+                          WcRoootCells(n,m)=amax1(Theta(n)  ,0.0)         !Wc in the cells with roots WcRootcells(cellnumber, materialnumber)
+                          nr(m)=nr(m)+1                                   !estimate the number of cells considered in each soil material
+                           nh=nh+1
+                      Rmass_mat(m)=Rmass_mat(m)+RMassYC(n)+RMassMC(n)     !Mass of roots in each material
+                          RmassTotal=RmassTotal+RMassYC(n)+RMassMC(n)
+                      end if
+                  end if
+              end do
+          end do
+
+
+          Node_area(:)=0.0
+              Do m=1, Nmat
+              if (nr(m).gt.0.)then
+                  do n=1, numNP
+                      if(matnum(n).eq.m)then
+                  AvgRootZoneWC(m)= AvgRootZoneWC(m) + 
+     #        WcRoootCells(n,m)*nodearea(n)  !AvgRootZoneWC(m)= for the sum of all water content in cells with root in each material
+                if (  WcRoootCells(n,m).gt.0.)then
+                  Node_area(m)=Node_area(m)+nodearea(n)
+                  end if 
+                      end if
+                  enddo
+                 if ( Node_area(m).gt.0.0)then
+                  AvgRootZoneWC(m) = amax1((AvgRootZoneWC(m) / 
+     !              Node_area(m)),0.0)          !AvgRootZoneWC(m)= is the average of the water content in the cell with roots in each soil material
+                 else 
+                     AvgRootZoneWC(m)=0.0
+                  end if 
+                  end if
+          end do
+
+      psiavg1=0.0
+      Do m=1, Nmat
+          if (nr(m).gt.0.)then
+              mm=MatNum(m)
+              VG_m=(1-1/(par(6,mm)))*(-1)
+              
+        if   (AvgRootZoneWC(mm).eq.0.) then
+            thetaRel=1.
+            else
+       thetaRel=(AvgRootZoneWC(mm)-par(1,mm))/(par(2,mm)-par(1,mm))
+       end if 
+              AvgHead(m)=(ThetaRel**(1/Vg_m))**(1/par(6,mm))-1
+              AvgHead(m)=amax1(AvgHead(m)/par(5,mm) * (-1),-7000.0)
+               psiavg1= psiavg1+ nr(m)*AvgHead(m)/(nh)/1000.0
+     !!        psiavg1= psiavg1+ Rmass_mat(m)*AvgHead(m)
+     !!            /(RmassTotal)/1000.0
+
+          end if
+      end do
+     
+      if (sum(nr).lt.0) then
+          psiavg1=-0.175
+      end if
+      
+      
+      else
+         psiavg1=-0.175
+      end if
+
+      
       Return
 16    Write(*,*) 'Soil file not found'      
 10    Call errmes(im,il)
@@ -247,7 +340,8 @@ c      double precision PPar
         FC=max(C2,1.d-37)
         return
       else
-        FC=0.0
+        FC=0.0001
+       ! write(*,*) 'h > hs', h, Hs
       endif
       return
       end
