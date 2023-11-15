@@ -3,6 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "GOSSYM", "CottonPn\GOSSYM.vfproj", "{480A7B65-821E-447E-A9E2-A5D1AE389052}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87C3F332-0565-4D3E-B4C7-3F74A909E2A9} = {87C3F332-0565-4D3E-B4C7-3F74A909E2A9}
+	EndProjectSection
 EndProject
 Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "2DGOSSYM", "2DSOIL\2DGOSSYM.vfproj", "{05500875-9B63-45CA-B7D6-FD6A5240ED1A}"
 	ProjectSection(ProjectDependencies) = postProject

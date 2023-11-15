@@ -142,7 +142,6 @@
 		<File RelativePath="HEATMOV.FOR"/>
 		<File RelativePath="hourwea.for"/>
 		<File RelativePath="Init.for"/>
-		<File RelativePath="..\..\..\..\..\MAIZSIM_2DSOIL\Soil SourceGas\Irrigation.for"/>
 		<File RelativePath="MASSBLW.FOR"/>
 		<File RelativePath="MNGMB.FOR"/>
 		<File RelativePath=".\Mulch_Decomp.for"/>
@@ -158,6 +157,7 @@
 		<File RelativePath="soilnden.for"/>
 		<File RelativePath=".\solmov.for"/>
 		<File RelativePath=".\solupt_Y1.for"/>
+		<File RelativePath=".\Irrigation.for"/>
 		<File RelativePath=".\SurfaceMulchProcess.for"/>
 		<File RelativePath=".\surfaceWaterBalanceAdjustment.for"/>
 		<File RelativePath="SYNCHRON.FOR"/>
