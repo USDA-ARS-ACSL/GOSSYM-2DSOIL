@@ -104,7 +104,8 @@
     !  ****************************************************************
 
     use common_block
-integer RIO, TimeHour
+integer  TimeHour
+Real RIO
 Character*15 remarks
 1000 FORMAT(' ** FIRST SQUARE ON ',I2.2,'/',I2.2,' **')
 1020 FORMAT(11X,' YIELD BALES/ACRE   YIELD LBS/ACRE')
@@ -144,13 +145,32 @@ Character*15 remarks
 
  
  !For classim output .G01============= 
-     if (daynum.eq.emerge) then
-         WRITE(77,1924) "jday","date","time","PlantH","LAI",                   &
-             "Nodes","Sites","N_Squares","N_GB","N_OB","SquareDM",      &
-             "GB_DM","OB_DM","LeafDM","StemDM","RootDM","Yield","Temp", &
-             "L_Temp","Rain","SRad","RH","PlantN","S_Psi","L_Psi",               &
-             "LArea","Pnet","SPnet", "Note"
-1924     FORMAT (A10, 28(",",A10))
+!     if (daynum.eq.emerge) then
+!            
+!         WRITE(77,1924) "jday","date","time","PlantH","LAI",                   &
+!             "Nodes","Sites","N_Squares","N_GB","N_OB","SquareDM",      &
+!             "GB_DM","OB_DM","LeafDM","StemDM","RootDM","Yield","Temp", &
+!             "L_Temp","Rain","SRad","RH","PlantN","S_Psi","L_Psi",               &
+!             "LArea","Pnet","SPnet", "Note"
+!1924     FORMAT (A10, 28(",",A10))
+ 
+ !For classim output .G01============= 
+      if (daynum.eq.emerge) then
+            
+         WRITE(77,1924) "jday", "date", "time", "PlantH", "LAI", "LInt",& 
+        "Nodes", "Sites", "N_Squares", "N_GB", "N_OB",& 
+        "NLvsLoss", "NSqLoss", "NBollsLoss", "NFruitShed",&
+        "PetShd_DM", "GB_lossDM", "Lf_lossDM", "Rt_lossDM",&
+        "Dd_WtDM", "SquareDM", "GB_DM", "OB_DM", "LeafDM",&
+        "StemDM", "RootDM", "ResC", "PlantDM", "R_S",& 
+        "Yield", "Temp", "L_Temp", "Rain", "SRad", "PFD",&
+        "RH", "LeafN", "StemN", "SeedN", "BurrN", "RootN",&
+        "Nloss", "PlantN", "N_uptake", "S_Psi", "L_Psi",&
+        "LArea", "VPD", "StCond", "Pnet", "PGross",&
+        "L_Res", "Main_Res", "Resp", "SPnet", "C_Bal",&
+        "Nstress_Pn", "Note"
+         
+1924     FORMAT (A10, 57(",",A12))
 
 !For classim output .G02===========
 
@@ -159,26 +179,12 @@ Character*15 remarks
 1969     FORMAT (A10, 7(",",A15))
 
 
-         !1924  Format('(1)Jday', '(2)Month/Day/Year', '(3)Plant_height[inch]', '(4)LAI[-]', &
-         !        '(5)Number_of_pre-fruiting_nodes_and_fruiting_branches_on_the_vegitative_branch[-]',&
-         !  '(6)Total_fruiting_sites/plant[-]', '(7)Total_number_of_squares/plant[-]', &
-         !  '(8)Total_number_of_green_bolls_past_abscission/plant[-]',	&
-         !   1X,'(9)Number_of_open_bolls/_plant[-]', '(10)Total_weight_of_squares[gm/plant]', &
-         !    '(11)Total_green_boll_weight[gm/plant]' &
-         !  , '(12)Weight_of_open_balls[gm/plant]', '(13)Leaf_weight_[gm/plant]', &
-         !  '(14)Stem_weight_[gm/plant]','(15)Root_weight_[gm/plant]', '(16)Total_yield_[lb/acre]', &
-         !   '(17)Average_temperature[fahrenheit]',1X,'(18)Rain_[inches/day]',1X,&
-         !   '(19)Incident_solar_radiation[ly/day]',1X,&
-         !   '(20)Fraction_of_the_day_time_during_which_the_leaf_is_turgid_for_growth[-]',1X,&
-         !   '(21)Total_Nitrate-N_uptake[g/day/plant]',1X,&
-         !    '(22)Total_Ammonium-N_uptake[g/day/plant]',1X,&
-         !   '(23)AverageSoilWaterPot_RootZone(bar)',1X,&
-         !   '(24)Leaf_Water_potential(bar)')
+
 
      end if 
      
     TimeHour=23
-    C00 = Z / 2.54
+    C00 = Z / 2.54   ! change the units from inches to cm
     C01 = INT * 100.
     ! C02 = PIXCON * 1000000
     C02 = PIXCON * 1000
@@ -206,34 +212,90 @@ Character*15 remarks
         ,SDWSTM,SDWLEF,RCH2O,SDWBOL,AVAILN,SUPNO3,SUPNH4			   &
         ,LEFABS,RUNOFF(DAYNUM),AMTIRR(DAYNUM)
 300     CONTINUE
+!***All the information that is printed in the g01 file***---    
         
-          
-           
+!jday	Julian day	Day starting from 1 on day 1 of the year        [daynum]
+!date	Date	Calender date                                       [MO,DAZE,IYEAR]
+!time
+!PlantH	Plant height	cm                                          [A01]
+!LAI	Leaf area index	_                                           [LAI]
+!LInt	Canopy light interception	_                               [INT]
+!Nodes	Number of main stem nodes	_                               [N00]
+!Sites	Number of fruiting sites	_                               [m01]
+!N_Squares	Number of squares	_                                   [m02]
+!N_GB	Number of green bolls	_                                   [m03]
+!N_OB	Number of open bolls	_                                   [m04]
+!NLvsLoss	Number of leaves lost	_                               [LVSLOS]
+!NSqLoss	Number of squares lost	_                               [SQABZ]
+!NBollsLoss	Number of bolls lost	_                               [BOLABZ]
+!NFruitShed	Total number of abscissed fruits	_                   [ABZ]
+!PetalShed_DM	Petal shed after blooming	gC/plant                [pqflr]
+!GB_lossDM	Green bolls lost	gC/plant                            [GBLOS]
+!Leaf_lossDM	Weight of leaves abscissed	gC/plant                [LEFABS]
+!Root_lossDM	Weight of root lost	gC/plant                        [RUTOFF]
+!Dead_WtDM	Total weight of dead tissue lost	gC/plant            [DEADWT]
+!SquareDM	Squares dry matter	gC/plant                            [SQWT]
+!GB_DM	Green boll dry matter	gC/plant                            [gbolwt]
+!OB_DM	Open boll dry matter	gC/plant                            [cotxx]
+!LeafDM	Leaf dry matter	gC/plant                                    [leafwt]
+!StemDM	Stem dry matter	gC/plant                                    [stemwt]
+!RootDM	Root dry matter	gC/plant                                    [rootwt]
+!ResC	Reserved dry matter	gC/plant                                [Resc]
+!PlantDM	Total plant dry matter	gC/plant                        [PlantW]
+!Root_Shoot	Root shoot ratio	_                                   [ROOTWT/(STEMWT+LEAFWT)]
+!Yield	Total yield	lb/acre                                         [Yield_lbs_ac]
+!Temp	Average temperature	DegreeC                                 [tavg]
+!L_Temp	Average leaf temperature	DegreeC                         [avgCanopTemp]
+!Rain	Rain+irrigation	mm/day                                      [RAIN]
+!SRad	Solar radiation	W/m2                                        [RIO]
+!PFD	Photosynthetic flux density	mol photons/day/m2              [sum(photoFluxDen)*3600/1000000]
+!RH	Relative humidity	%                                           [RH_D*100]                         
+!LeafN	Leaf nitrogen	gN/plant                                    [SLEAFN]
+!StemN	Stem nitrogen	gN/plant                                    [STEMN]
+!SeedN	seed nitrogen	gN/plant                                    [SEEDN]
+!BurrN	Burr nitrogen	gN/plant                                    [BURRN]
+!RootN	Root nitrogen	gN/plant                                    [ROOTN]   
+!Nloss	Nitrogen lost abscission 	gN/plant                        [NLOSS]
+!PlantN	Total plant nitrogen	gN/plant                            [PLANTN]
+!N_uptake	Nitrogen uptake	gN/plant                                [NitrogeNUptake/popslab]
+!S_Psi	Average soil water potential in the root zone	bar         [psiavg]
+!L_Psi	Leaf water potential	bar                                 [psil_g]
+!LArea	Leaf area 	cm2                                             [area*100]
+!VPD	Vapour pressure deficit	Kpa                                 [sum(vpd)/ciPerd]
+!StCond	Stomatal conductance	micro-mol/m2-s                      [sum(StomCond)/ciPerd]
+!Pnet	Net photosynthesis	gC/plant                                [Pn]                               
+!PGross	Gross photosythesis	gC/plant                                [PPLANT]
+!L_Res	Light respiration	gC/plant                                [LYTRES]
+!Main_Res	Maintanance respiration	gC/plant                        [BMAIN]
+!Resp	Total respiration 	gC/plant                                [LYTRES+BMAIN]
+!SPnet	Cumulative net photosynthesis	gC/plant                    [spn]
+!C_Bal	Plant C balance	gC/plant                                    [CHOBAL]
+!Nstress_Pnet	Nitrogen stress on the photosynthesis	_           [stress_index]
+!Note	Note on first day of square, bloom and open boll	_       [remarks]
+        
+        
+        A01=Z   !Z is the plant height in cm
         N00=NUMPFN+NFBR(1) !Total number of prefrutingnodesand fruting branches on the vegitative branch
         !numpfn: NUMBER OF PREfRUITING NODES
         !NFBR(K):  NUMBER OF fRUITING BRANCHES ON THE VEGETATIVE BRANCH
         !Sitez, Sqrz, GBz2, Nopen etc are per plant
-        !Multiply these with population per acre to get the count in acre
-        N01=IFIX(SITEZ*POPPLT)    !total fruting sites, POpplt: plants/acre
-        N02=IFIX(SQRZ*POPPLT)     !Total number of squares
-        N03=IFIX(GBZ2*POPPLT)     !GREEN BOLLS PAST ABSCISSION AGE
-        N04=IFIX(NOPEN*POPPLT)    !Number of open bolla
-        N05=IFIX(ABZ*POPPLT)      !Total abscissed fruit/acre
-        A01=Z/2.54    !Z is the plant height in cm
-        !A01 gives the plant height in inches
-        
-
         m01=IFIX(SITEZ)  !Per plant
         m02=IFIX(SQRZ)
         m03=IFIX(GBZ2)
+   
+       
         m04=IFIX(NOPEN)
         m05=IFIX(ABZ)
-        m06=IFIX(abzb*POPPLT)
+        m051=IFIX(LVSLOS)
+        m052=IFIX(SQABZT)
+        m053=IFIX(BOLABZT)
+        m054=IFIX(BOLABZT)+IFIX(SQABZT)
+        
         !yield: yield of 500 lb. bales/acre
         Yield_lbs_ac=YIELD*500.  !Total yield in lb/acre
         !TAVG=TAVG/5.*9.+32. !Celcius to fahrenheit
-        RAIN=RAIN/2.54    !rain is in mm/day, here its converting to inches /day
-        RIO= RI/41868   !ly/day   !in soil 2d Ri is in Joule/m2 so we need to / by 41868 to get in ly/day
+        RAIN=RAIN*10  !rain is in cm/day, here its converting to mm/day
+        RIO= RI/41868   !ly/day   !in soil 2d Ri is in Joule/m2 so we need to / by 41868 to get in W/m2
         SUPNO3= NPOOL1/popslab !Total Nitrate-N g/day/plant  !This is the sum of both ammonium N and Nitrate N
         SUPNH4=0.
         
@@ -247,30 +309,39 @@ Character*15 remarks
         else 
             remarks="None"
         end if
-        !Water and Nitrogen stress to be marked as remarks
-        !if ((WS_1.eq.0) .and. (psiavg.LE. PSICMX)) then
-        !    remarks= "1st_W_Stress"
-        !    WS_1=1
-        !end if 
-        ! if ((NS_1.eq.0) .and.((NV.LE. 1).or. (NF.LE.1) .or. (NR.LE.1))) then
-        !    remarks= "1st_N_Stress"
-        !    NS_1=1
-        !end if     
-        ! totalDM=SQWT,gbolwt,cotxx,leafwt,stemwt,rootwt             !gC/plant
-!For classim output G01, all plant growth components are added here except stresses
-        WRITE(77,1925) daynum,MO,DAZE,IYEAR,TimeHour,A01,LAI,N00,m01,m02,m03,m04,    &
-            SQWT,gbolwt,cotxx,leafwt,stemwt,rootwt,Yield_lbs_ac,                  &
-            tavg,avgCanopTemp,rain,rio,RH_D*100,PlantN,psiavg,psil_g,                    &
-            area/100,  Pn,Spn,remarks
-1925    FORMAT(1X,I8,",",1X,I2,'/',I2.2,'/',I4.4,(",",I8),2(",",F9.2),5(",",I4),10(",",F9.2),&
-            (",",I5),1(",",f9.2),3(",",f9.3),3(",",f9.2),",",A20)
 
+!For classim output G01, all plant growth components are added here except stresses
+!        WRITE(77,1925) daynum,MO,DAZE,IYEAR,TimeHour,A01,LAI,N00,m01,m02,m03,m04,    &
+!            SQWT,gbolwt,cotxx,leafwt,stemwt,rootwt,Yield_lbs_ac,                  &
+!            tavg,avgCanopTemp,rain,rio,RH_D*100,PlantN,psiavg,psil_g,                    &
+!            area*100,  Pn,Spn,remarks
+!1925        FORMAT(1X,I8,",",1X,I2,'/',I2.2,'/',I4.4,(",",I8),2(",",F9.2),5(",",I4),10(",",F9.2),&
+!            (",",I5),1(",",f9.2),3(",",f9.3),3(",",f9.2),",",A20)
+
+          WRITE(77,1925) daynum,	MO,DAZE,IYEAR,TimeHour,	A01,LAI,INT,N00,m01,	m02,	&
+            m03,	m04,	m051, m052, m053, m054,	pqflr,	GBLOS,	&
+            LEFABS,	RUTOFF,	DEADWT,	SQWT,	gbolwt,	cotxx,	leafwt,	stemwt,	rootwt,	&
+            Resc,	PlantW,	ROOTWT/(STEMWT+LEAFWT),	Yield_lbs_ac*1.12085105,	tavg,&	
+            avgCanopTemp,	RAIN,	RIO,	sum(photoFluxDen)*3600/1000000,	&
+            RH_D*100,	SLEAFN,	STEMN,	SEEDN,	BURRN,	ROOTN,	NLOSS,	PLANTN,	&
+            totalNitrogenUptake/popslab,	psiavg,	psil_g*10,	area*100,	sum(vpd)/ciPerd,&	
+            sum(StomCond)/ciPerd,	Pn,	PPLANT,	LYTRES,	BMAIN,	LYTRES+BMAIN,&	
+            spn,	CHOBAL,	stress_index,	remarks
+
+1925        FORMAT(1X,I8,",",1X,I2,'/',I2.2,'/',I4.4,(",",I8),3(",",f9.2),5(",",I8),&
+            4(",",I8), 42(",",f9.2),",",A20)        
+            
 !For classim output G02, all stresses are added here
         WRITE(44,1970) daynum,MO,DAZE,IYEAR,TimeHour, WSTRSD,  nv, nf, nr,           &
             cstres
 1970    FORMAT(1X,I8,",",1X,I2,'/',I2.2,'/',I4.4,(",",I8),5(",",F10.3) )
-
-
+        !Multiply these with population per acre to get the count in acre
+        N01=IFIX(SITEZ*POPPLT)    !total fruting sites, POpplt: plants/acre
+        N02=IFIX(SQRZ*POPPLT)     !Total number of squares
+        N03=IFIX(GBZ2*POPPLT)     !GREEN BOLLS PAST ABSCISSION AGE
+        N04=IFIX(NOPEN*POPPLT)    !Number of open bolla
+        N05=IFIX(ABZ*POPPLT)      !Total abscissed fruit/acre
+        m06=IFIX(abzb*POPPLT)
             
             
 !-----------For debug 
@@ -1217,7 +1288,7 @@ Character*15 remarks
     subroutine Add_output1
     use common_block
     write(22,1971) dayofYear , tCount, wattsm(iTime),par(iTime),tair(iTime) ,vpd(iTime) ,Lai, Psilh(iTime)
-1971 FORMAT(I3,5X,I2,6(4x,f9.2) )
+1971 FORMAT(I3,5X,I2,6(4x,f11.4) )
     return
     end
 

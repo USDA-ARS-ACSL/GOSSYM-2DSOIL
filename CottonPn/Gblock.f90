@@ -36,6 +36,7 @@
     BETAI=0.
     BETAW=0.
     BOLL1=0.
+    BOLABZT=0.
     BURCN=0.
     BURMIN=0.
     BURR1=0.
@@ -121,7 +122,7 @@
     GAMMA=0.653
     GBLOS=0.
     GBOLWT=0.
-    GBZ2=0.
+    GBZ2=0. 
     GIN=0.
     GINP=0.0
     GSUBR=.375
@@ -181,7 +182,7 @@
     LMAX=0
     LR=5
     LTYPE=0
-    LVSLOS=0
+    LVSLOS=0.
     LYTRES=0.
 
     MH2O=0
@@ -250,6 +251,7 @@
     POLYNA = 0
     POPFAC = 0.
     POPPLT = 41000.
+    PPLANT=0.0
     PQFLR = 0.
     PRPDAY = 0
     PRPKGH = 0.
@@ -319,11 +321,13 @@
     SQUAR = 0.
     SQRZ = 0.
     SQWT = 0.
+    SQABZT=0.
     SROOT = 0.
     SSTEM = 0.
     STEMCN = .037
     STEMN  = .0074
     STEMRS = 0.
+    stress_index=0.0
     SUMEP = 0.0
     SUMES = 0.0
     SUMSTRS = 0.0

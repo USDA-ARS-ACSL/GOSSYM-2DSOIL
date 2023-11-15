@@ -2207,7 +2207,7 @@
     use common_block
 
     BOLLOS = 0.
-    GBZ2   = 0.
+    GBZ2   = 0
     ABZ    = 0.
     SUMSQR = 0.
     SUMBOL = 0.
@@ -2240,9 +2240,10 @@
             LEAFWT = LEAFWT - PFWL(J)
             PIXLOS =  PFWL(J) * PIXCON
             PIXPLT = PIXPLT - PIXLOS
-            SLEAFN = SLEAFN - PFWL(J) * LeafCN
-            NLOSS  = NLOSS + (PFWL(J) * LeafCN)
+            SLEAFN = SLEAFN - PFWL(J) * 0.01
+            NLOSS  = NLOSS + (PFWL(J) * 0.01)
             PFWL(J) = 0.
+            LVSLOS = LVSLOS+1
             IF((DEFBGN.GT.0).AND.(DAYNUM.GT.DEFBGN))			 &
           !                  IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN))			 &
 
@@ -2263,12 +2264,13 @@
                     LEAFWT = LEAFWT - MLEAFW(K,L)
                     PIXLOS = MLEAFW(K,L) * PIXCON
                     PIXPLT = PIXPLT - PIXLOS
-                    SLEAFN = SLEAFN - MLEAFW(K,L) * LeafCN
-                    NLOSS  = NLOSS + (MLEAFW(K,L) * LeafCN)
+                    SLEAFN = SLEAFN - MLEAFW(K,L) * 0.01
+                    NLOSS  = NLOSS + (MLEAFW(K,L) * 0.01)
                     AREA = AREA - MLAREA(K,L)
                     LAI = AREA/POPFAC
                     MLAREA(K,L) = 0.
                     MLEAFW(K,L) = 0.
+                    LVSLOS = LVSLOS+1
                      IF((DEFBGN.GT.0).AND.(DAYNUM.GT.DEFBGN))		 &
                     !         IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN))		 &
                         LVSLOS = LVSLOS+1
@@ -2282,12 +2284,13 @@
                     LEAFWT = LEAFWT - LEAFW(K,L,M)
                     PIXLOS = LEAFW(K,L,M) * PIXCON
                     PIXPLT = PIXPLT - PIXLOS
-                    SLEAFN = SLEAFN - LEAFW(K,L,M) * LeafCN
-                    NLOSS  = NLOSS + (LEAFW(K,L,M) * LeafCN)
+                    SLEAFN = SLEAFN - LEAFW(K,L,M) * 0.01
+                    NLOSS  = NLOSS + (LEAFW(K,L,M) * 0.01)
                     AREA = AREA - LAREA(K,L,M)
                     LAI = AREA/POPFAC
                     LAREA(K,L,M) = 0.
                     LEAFW(K,L,M) = 0.
+                    LVSLOS = LVSLOS+1
                     IF((DEFBGN.GT.0).AND.(DAYNUM.GT.DEFBGN))			   &
             !        IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN))			   &
                         LVSLOS = LVSLOS+1
@@ -2316,8 +2319,8 @@
                 LEAFWT = LEAFWT - LEAFW(K,L,M)
                 PIXLOS = LEAFW(K,L,M) * PIXCON
                 PIXPLT = PIXPLT - PIXLOS
-                SLEAFN = SLEAFN - LEAFW(K,L,M) * LeafCN
-                NLOSS  = NLOSS + (LEAFW(K,L,M) * LeafCN)
+                SLEAFN = SLEAFN - LEAFW(K,L,M) * 0.01
+                NLOSS  = NLOSS + (LEAFW(K,L,M) * 0.01)
                 AREA = AREA - LAREA(K,L,M)
                 LAREA(K,L,M) = 0.
                 LEAFW(K,L,M) = 0.
@@ -2328,8 +2331,8 @@
                     LEAFWT = LEAFWT - MLEAFW(K,L)
                     PIXLOS = MLEAFW(K,L) * PIXCON
                     PIXPLT = PIXPLT - PIXLOS
-                    SLEAFN = SLEAFN - MLEAFW(K,L) * LeafCN
-                    NLOSS  = NLOSS + (MLEAFW(K,L) * LeafCN)
+                    SLEAFN = SLEAFN - MLEAFW(K,L) * 0.01
+                    NLOSS  = NLOSS + (MLEAFW(K,L) * 0.01)
                     AREA = AREA - MLAREA(K,L)
                     MLAREA(K,L) = 0.
                     MLEAFW(K,L) = 0.
@@ -2491,6 +2494,8 @@
         !BOLOSS(JDAY) = BOLABZ
         SQLOSS(DAYNUM) = SQABZ
         BOLOSS(DAYNUM) = BOLABZ
+        BOLABZT=BOLABZT+BOLABZ
+        SQABZT=SQABZT+SQABZ
         ABZ = SQABZ + BOLABZ
 
     endif

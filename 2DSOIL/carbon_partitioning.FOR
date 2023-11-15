@@ -778,10 +778,11 @@ C
       if(tDay.lt.25.) tDay = 25.
       !calculation of psil_ based on the equation used in the old GOSSYM
       !Psild is a function of temperature, avg. soil waterpotential in the root zone and solar radiation
-      psilC = (-1.2992-17.0305*psiAvg1-0.8148*tDay                               !Unit of Psil is bar
+      psilC = (-1.2992-17.0305*psiAvg1-0.8148*tDay                               !Unit of Psil is Mpa
      &+0.02173*(RI/41868)+0.3371*psiAvg1*tDay+0.02019*(RI/41868)
      &*psiAvg1 -0.00078985*(RI/41868)*tDay+0.019766*tDay**2)*0.101325              !/41868 is to convert to langley/day
 
+      !PSIAV is in bar and psilc is in MPa. 
       !THE FOLLOWING IF STATEMENTS KEEPS THE PSILD EQUATION WITHIN THE
       !THE RANGE OF KHARCHE'S DATA
       psilC = AMIN1(psilC,(psiAvg1 - 8.0)*0.101325)

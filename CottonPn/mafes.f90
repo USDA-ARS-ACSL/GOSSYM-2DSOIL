@@ -82,7 +82,7 @@
       cco2 = co2
       cVpd(ciTime) = vpd(iTime)                     !cvpd:water vapour pressure deficit
       cWind = wind                                  ![km/hour] cwind: wind for the day
-      cPsil_ = psilC                                ![bar] cpsil_minimum leaf water potential for the day 
+      cPsil_ = psilC                                ![Mpa] cpsil_minimum leaf water potential for the day 
       cLatude = latude
       cLareat = area*100                            !area is in [dm2], clareat: leaf area is in [cm2]
       cLai=lai                                      !leaf area index
@@ -101,7 +101,9 @@
         IF ( iTime.eq.tCount) then
             Psilh(iTime)=PsilC                      !PsilC: Leaf water potential calcualated with the same concept in the old GOSSYM
             canopTemp(iTime)=temperature            !Leaf temperature form Gas Exchange
-            call Add_output1                         !For writing additional output to cotton.sum file
+            StomCond(iTime)=stomConduc              !Stomatal conductance: mmol H2o m-2 s-1 ( for a day , need to average)
+            photoFluxDen(iTime)=par(iTime) * 4.55   !conversion from PAR in W m-2 to umol s-1 m-2.Photosynthetic flux density: umol/m2/sec
+            call Add_output1                        !For writing additional output to cotton.sum file
             tcount=tcount+1
             if (tcount.gt.ciPerd)  tcount=1
         end if
@@ -151,7 +153,7 @@
             psil_g=minval(psilh)                                        !minimum psil of the day
             if(psil_g.lt.-3.5) psil_g=-3.5
             if(psil_g.ge.-0.8) psil_g = -0.8
-            avgCanopTemp=sum(canopTemp)/ciPerd  
+            avgCanopTemp=sum(canopTemp)/ciPerd 
             if (nShoot.eq.1)then                                        
             DayNum = emerge+iDay                                        !julian day
             iDay=iDay+1                                                 !starts at 1 on the day of emergence
@@ -178,7 +180,7 @@
         end if
 
         CropRun=CropRun+1
-        if ((LVSLOS.gt.0.).or.(CropRun.gt.(activeCropDays+1)))  RunFlag=0.  !Cotton is assumed to be matured once leaves starts dropping
+        if (CropRun.gt.(activeCropDays+1))  RunFlag=0.  !Maturity concept in cotton check
         
         if(CropRun.gt.(activeCropDays+1))then
             tNext(ModNum)=1.e+32                                        !this stopes the daily cotton loop

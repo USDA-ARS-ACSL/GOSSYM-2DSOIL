@@ -81,7 +81,7 @@ void gasexchanger_(struct
 		double Es = (0.611 * exp(17.502 * wthr.airT / (240.97 + wthr.airT))); // saturated vapor pressure at airT
 		wthr.RH = (1 - (Weather->CVPD[Weather->CITIME-1] / Es)) * 100.0; // relative humidity in percent
 		wthr.wind = Weather->CWIND * (1000.0 / 3600.0); // conversion from km hr-1 to m s-1
-		wthr.psil_ = Weather->CPSIL_/ 10;// convert current leaf water potential from bars to MPa
+		wthr.psil_ = Weather->CPSIL_/10;//CPSIL is already in MPa / 10;// convert current leaf water potential from bars to MPa
 	    // wthr.psil_ = -0.2;
 		wthr.LAI = Weather->CLAI;
 		//wthr.LAI = Weather->LAREAT * 38.75196 * 1.0E-4; // LAI = LAREAT * POPARE * 1.0E-4

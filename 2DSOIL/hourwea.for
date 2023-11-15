@@ -8,7 +8,7 @@ c
 CDT  9/10/2014 Added CO2 as a weather variable and took it out of the 
 CDT   initials file. 
 
-C**  MSW1-  switch to indicate if hourl wet bulb temperatures are     **
+C**  MSW1-  switch to indicate if hourly wet bulb temperatures are     **
 C**         available (=1 if YES).                                    **
 C**                                                                   **
 C**  MSW2-  switch to indicate if hourly wind is available (=1 if YES).**
@@ -87,7 +87,7 @@ c inputs hourly data
       integer m,CurYear,Modnum, ThisYear,
      &         isol
       double precision St,t
-      real Interval, HRAIN,HSR,HTEMP, HTEMPY,HWIND,
+      real Interval, HRAIN,HSR,HTEMP, HTEMPY,HWIND,Rel_Humid,
      &     BEERS 
       character*10 date
       integer HOUR
@@ -116,7 +116,16 @@ CYAPEND
       St=0.1D0*Step
       If (lInput.eq.0) goto 11
       
-      SurWeatherUpdate=0
+cccz
+cccz initialized surface water income  
+      do i=1,NumBPD
+         Varbw_Air(i,1)=0.0D0     ! cccz this is to record the weather data, because the varBW will change based on runoff
+         Varbw_Air(i,2)=0.0D0
+         Varbw_Air(i,3)=0.0D0  
+         Varbw_Mulch(i,1)=0.0D0     ! cccz this is to record the weather data after mulch model, because the varBW will change based on runoff
+         Varbw_Mulch(i,2)=0.0D0
+         Varbw_Mulch(i,3)=0.0D0 
+      enddo
 C
 C  First and last days
 C
@@ -126,18 +135,13 @@ c
         NumMod=NumMod+1
         ModNum=NumMod
         tNext(ModNum)=time
-        Interval=1/24.
-        IRAV=3.5 !default for autoirrigate
+        Interval=1.0D0/24.0D0
+        IRAV=3.5D0 !default for autoirrigate
 
 c
       im=160
       il=0
-C      Open (5,file='Weatherhrly.dat',status='old',ERR=10)
       Open (5,file=ClimateFile,status='old',ERR=10)
-cdt
-c       Do i=1,NumNP
-c        PcodeW(i)=CodeW(i)
-c         Enddo
 C
 C  Read descriptors and conversion constants for weather data
 C
@@ -190,7 +194,7 @@ C   we can have potentially 3 columns for additional data
 C  if hourly data are missing
 C    average wind, avg chem conc and average CO2
 C    so, if hourly wind is missing and we use an avg value MSW2 will be 0
-       NCD=4-MSW2-MSW7-MSW4*iSol ! no irav for hourly data
+       NCD=3-MSW2-MSW7-MSW4*iSol ! no irav for hourly data
 C      NCD=1-MSW2+ISOL+(NumG+1)*Movers(4)
       im=im+1
       il=il+1
@@ -212,6 +216,7 @@ c  read at least one value from the line
 
       IF(MSW7.eq.0) then
          CO2=CLIMAT(NCD)  ! last one is always co2
+         GAIR(1)=CO2     
        Endif
 
       close(5)
@@ -289,10 +294,6 @@ c..................... Input daily data
       
       tAtm=t          !insure we call the weather code the next step
       
-c       Do i=1,NumNP
-c        CodeW(i)=PcodeW(i)
-c         Enddo
-
 c
 c ZEROING DAILY ARRAYS
 c
@@ -315,7 +316,7 @@ C    since the julian day is referenced to a time longer in the past
            ThisYear=CurYear(date)
            write (date,'("01/01/",i4.4)') ThisYear  
            DayOfYear=JDAY-julday(date)
-            
+        
            HSR(M)=max(0.0,climat(1))*BSOLAR/3600  ! convert to watts m-2 hard 
                                           !coded for hourly now
 
@@ -326,7 +327,7 @@ c model cannot handle freezing temperatures yet
            HRAIN(M) = CLIMAT(3)*erain         ! convert to cm rain in 
                                               ! this hour
            If (MSW2.gt.0) HWIND(M)=CLIMAT(4)
-            
+           
           If (MSW4.GT.0.AND.NumSol.ne.0) then
              Do i=1,NumSol
                CPREC(i)=CLIMAT(3+2*MSW1+MSW2+i)
@@ -341,9 +342,11 @@ c model cannot handle freezing temperatures yet
 
        If(MSW7.gt.0) then
           CO2=Climat(3+2*MSW1+MSW2+ISOL*MSW4+MSW6+MSW7)
+          GAIR(1)=CO2     
        EndIf
-
-
+           GAIR(2)=209000    !this is the atmospheric O2 concentration in ppm  
+csb O2 content of air=20.95% by volume, ie; 100 parts of air=20.95 parts of O2
+csb 1 part of air=0.2095 parts of O2. in 10^6 parts of air=0.2095*10^6=209000 ppm
 C
 C      ADJUST UNITS FOR HOURLY DATA
 c      HSR(M) is converted to an hours worth of Watts m-2 (Joules m-2 h-1) 
@@ -369,9 +372,6 @@ c RI should be total J m-2 -- work in Watts * time = total energy
              ENDIF
 1015      CONTINUE
           RAIN = SUM24
-          
-          
-          
         If (MSW1.GT.0) then
           TWET(M) = (CLIMAT(3+MSW1) - ATEMP)/BTEMP
           TDRY(M) = (CLIMAT(3+MSW1+1) - ATEMP)/BTEMP
@@ -407,7 +407,7 @@ C
 C
 C  CALCULATE DAYLENGTH
 C
-        dayLng = ACOS((-0.014544 - D12)/D13)*7.6394
+        DAYLNG = ACOS((-0.014544 - D12)/D13)*7.6394
 C       7.6394 = 180/3.1416/360*24*2
 C
 C  CALCULATE SOLAR RADIATION INCIDENT ON TOP OF THE EARTH'S
@@ -415,7 +415,7 @@ C         ATMOSPHERE AT SOLAR NOON
 C
         RADVEC = 1 + (0.01674*SIN((DayOfYear - 93.5)*0.9863*DEGRAD))
         WATATM = 1325.4*D14/(RADVEC*RADVEC)
-        
+C
 C  CALCULATE AN ATMOSPHERIC TRANSMISSION COEFFICIENT FOR THIS
 C         LATITUDE AND TIME OF YEAR. ***
 C
@@ -443,7 +443,7 @@ C  GIVEN DAILY INTEGRAL AND ASSUMING RADIATION FLUX DENSITY
 C  VARIES AS A HALF SINE WAVE OVER THE PHOTOPERIOD
 C  Dividing by daylength and 3600 converts from MJ to watts
 C
-        WATACT = RI*4.363E-4/dayLng     ! Watts per m2
+        WATACT = RI*4.363E-4/DAYLNG     ! Watts per m2
 C       4.363E-4 = 3.1416/3600/2
 C
 C  CALCULATE CLOUD COVER. ***
@@ -485,8 +485,7 @@ C
       ENDIf
 C
 C  CALCULATE TOTAL RADIATION INCIDENT ON THE CROP AT EACH TIME
-C-0
-    
+C
         Do I = 1,IPERD
           TIMH = I - 0.5
           WATTSM(I) = 0.0
@@ -499,9 +498,16 @@ cd   HSR is watts
            WATTSM(IDAWN) = HSR(IDAWN)
            WATTSM(IDUSK) = HSR(IDUSK)
       ENDIf
-     
-C.............Calculate TDAY: average daytime temperature 
-         
+      
+c DT 10/12/2021 sometimes due to dst issues and weather station clocks,
+c  radiation between dawn and dusk  can be 0 so need to adjust WATTSM for this
+       Do I = 1, IPERD
+        if (I.ge.IDAWN.and.I.le.IDUSK) then
+          if (WATTSM(I).le.0.0) then
+           WATTSM(I)=WATTSM(I)+0.1
+           endif
+        endif
+       enddo
 c..................... Temperature and vapour pressure submodel
 
 
@@ -622,15 +628,16 @@ C
         
 c....................Light interception submodel
 
-        If(NShoot.ne.0) then
+        If(NShoot.ne.0.and.LAI.gt.0.0) then
 C
 C  CALCULATE SOLAR ALTITUDE AND SOLAR AZIMUTH FOR EACH TIME
 C
           Do 30 I = 1,IPERD
             SINALT(I) = D12 + (D13*COS(HRANG(I)))
             SOLALT(I) = ASIN(SINALT(I))
-            SINAZI(I) = -COS(DEC)*SIN(HRANG(I))/COS(SOLALT(I))
- 30       Continue
+            SINAZI(I) = max(-1.D0,(-COS(DEC)*
+     &        SIN(HRANG(I))/COS(SOLALT(I)))) 
+30       Continue
           D18 = 0.0
           Do 60, I = 1,IHPERD
             SOLAZI(I) = PI + ASIN(SINAZI(I))
@@ -810,17 +817,15 @@ C     Further we have hourly calculations
 C
 55    If(Abs(Time-tNext(ModNum)).lt.0.001*Step.or.lInput.eq.1) then
           
-       SurWeatherUpdate=1
-       
+     
        ITIME=Idint(dMOD(t+St,1.D0)/PERIOD+1)
-       
        Do i=1, NumBP
          do j=1, 4
            if (j.lt.4) VarBW(i,j)=0.0
            VarBT(i,j)=0.0
          Enddo
         Enddo
-      
+
 C
 C  FOR DAYLIGHT PERIODS:
 C  CALCULATE NET UPWARD LONG-WAVE RADIATION ***
@@ -976,9 +981,6 @@ C
      &   - (2.3668*TAIR(ITIME))))
      &   + (VPD(ITIME)*109.375*(ROUGH +(0.149*WINDL))))
      &   /((DEL(ITIME)/GAMMA(ITIME)) + 1.0)
-        
-        !EPO=EPO*24 !(gm/m2/day)  !have considered the crop cover 
-        !ET_Demand= EPO
 C
 C   CODE ADDED TO PREVENT DIVISION BY o
 C
@@ -1002,16 +1004,15 @@ c................... Precipitation and irrigation
       n=KXB(i)
       k=CodeW(n)
       If(K.eq.4.or.K.eq.-4) then 
-cccz         VarBW_old(i,1)=VarBW(i,1)
          VarBW(i,1)=RINT(ITIME)
       If(NumSol.ne.0) then
-          do j=1,NumSol
+        do j=1,NumSol
 cdt was varbs(n,j)
-          VarBS(i,j)=CPREC(j)
-          Enddo
+         VarBS(i,j)=CPREC(j)
+        Enddo
        Endif
 *  
-         VarBW(i,3)=VarBW(i,2)-VarBW(i,1)   !Potential evaporation [varBW(i,2)]- precipitation[VarBW(i,1)]
+       VarBW(i,3)=VarBW(i,2)-VarBW(i,1)
 cccz Q here downwards is positive
 cccz we assume the depth of a slab is 1 cm
 cccz then the unit of Q should be slab(cm)*width(cm)*Varbw(cm/day)
@@ -1055,6 +1056,7 @@ cccz Z updated the order here, please check.
         VarBT(n_sur,4)=0.0
         VarBT(n_sur,3)=0.0
         VarBT(n_sur,2)=0.0
+c        VarBT(n_sur,1)=0.0
   
         If (k.eq.-4) then
 C     if node is exposed     
@@ -1122,20 +1124,38 @@ c assume 5% of radiation reaches soil surface through canopy
           endif
 
            VarBT(n_sur,1)=TAirN
-        Endif
+          Endif
+
+cccz the reason of using this line
+cccz when surface runoff occurs during rainfall, the rainfall take air temperature to soil surface
+cccz alter the boundary condition
+cccz the boundary condition will be automatically shift to 4 when runoff occurs and shift back to -4 when runoff disappeared.
+          If (k.eq.4) then
+           VarBT(n_sur,1)=TAirN   
+          Endif
+          
 95    Continue
 C ...............End of heat balance
 c................... Gas movement
       Do i=1,NumBP
-      n=KXB(i)
-      k=CodeW(n)
-      If(K.eq.4.or.K.eq.-4) then
-        do jjj=1,NumG
-          VarBG(i,jjj,2)=PG*Width(i)
-          VarBG(i,jjj,3)=PG*GAIR(jjj)*Width(i)
-        Enddo
-      Endif
+          n=KXB(i)
+          k=CodeG(n)
+          If(K.eq.4.or.K.eq.-4) then                      !-4: soil atmospheric boundary with gas flux instead of Gas content at the nodes
+              do jjj=1,NumG
+                  VarBG(i,jjj,2)=GasTransfCoeff(jjj)      ! GasTransfCoeff is the conductance of surface air layer to gas flow or rate constant of the gas exchange between the soil and the atmosphere [cm/day]
+                  VarBG(i,jjj,3)=GasTransfCoeff(jjj)   
+     !                *GAIR(jjj)/ppm_to_ugGasCm3air(jjj)  ! convert the initial concentration of CO2 in [ppm]  to [ug co2 /cm3 air]!GAIR: is the atmospheric CO2 concentration [ppm], see conversion details in grid_bnd
+                  VarBG(i,jjj,1)=GAIR(jjj)/ppm_to_ugGasCm3air(jjj)           ! convert the initial concentration of CO2 in [ppm]  to [ug co2 /cm3 air]!This is if BC=4, is gas content instead of flux
+              Enddo
+          Endif
+          if (K.eq.1.or.K.eq.3.or.k.eq.6) then
+              do jjj=1,NumG
+                  VarBG(i,jjj,2)=GasTransfCoeff(jjj)   
+                  VarBG(i,jjj,1)= GAIR(jjj)/ppm_to_ugGasCm3air(jjj)          ! convert the atm CO2 in [ppm]  to [ug co2 /cm3 air]
+              end do
+          end if
       Enddo
+     
 c................... End gas movement   
 c................... Furrow irrigation
 c
@@ -1156,14 +1176,45 @@ c
 c................... End of the furrow irrigation
    
 c................... This is the end of hourly calculations
-      WIND =HWIND((Itime) )
+      Wind=HWIND(Itime) ! save hourly value of wind to pass to crop model
       tNext(ModNum)=Time+period
+      
+      do i=1,NumBPD
+cccz extract useful variables for surface physical processes
+cccz water input from air-mulch interface
+         Varbw_Air(i,1)=VarBW(i,1)
+         Varbw_Air(i,2)=VarBW(i,2)
+         Varbw_Air(i,3)=VarBW(i,3)
+cccz water input from mulch soil interface (wait to be adjusted by surface runoff)
+         Varbw_Mulch(i,1)=VarBW(i,1)
+         Varbw_Mulch(i,2)=VarBW(i,2)
+         Varbw_Mulch(i,3)=VarBW(i,3) 
+cccz renormalize heat fluxes at air-mulch interface
+         Varbt_Air(i,1)=Varbt(i,1)
+         Varbt_Air(i,2)=Varbt(i,2)
+         Varbt_Air(i,3)=Varbt(i,3)
+         Varbt_Air(i,4)=Varbt(i,4)
+cccz renormalize heat fluxes at mulch-soil interface (wait to be adjusted by surface runoff)
+         Varbt_Mulch(i,1)=Varbt(i,1)
+         Varbt_Mulch(i,2)=Varbt(i,2)
+         Varbt_Mulch(i,3)=Varbt(i,3)
+         Varbt_Mulch(i,4)=Varbt(i,4)
+         do jjj=1,NumG
+cccz renormalize gas fluxes at air-mulch interface
+          Varbg_Air(i,jjj,1)=Varbg(i,jjj,1)
+          Varbg_Air(i,jjj,2)=Varbg(i,jjj,2)
+          Varbg_Air(i,jjj,3)=Varbg(i,jjj,3)
+cccz renormalize gas fluxes at mulch-soil interface (wait to be adjusted by surface runoff)
+          Varbg_Mulch(i,jjj,1)=Varbg(i,jjj,1)
+          Varbg_Mulch(i,jjj,2)=Varbg(i,jjj,2)
+          Varbg_Mulch(i,jjj,3)=Varbg(i,jjj,3)
+         enddo
+      enddo
+cccz assign the new wind speed
+
+         
       Endif      ! hourly loop
 c      
-
-      
- 
-
       RETURN
 10    call errmes(im,il)
       write(*,*) "Error in Weather File"

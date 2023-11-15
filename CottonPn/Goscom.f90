@@ -63,12 +63,15 @@
 	Parameter (NumCropD=500)
 	Double precision   CropActive(NumCropD),ETActive(NumCropD),temp
     Double precision   tnextet, etactivedays
-    Double precision   psilh(24),canopTemp(24),avgCanopTemp
+    Double precision   psilh(24),canopTemp(24),avgCanopTemp,StomCond(24)
+    Double precision   photoFluxDen(24)
     parameter (Nfrutc=75)
     Integer fertd(Nfrutc)                   !jday
     integer IMof(Nfrutc),IDyf(Nfrutc), iyrf(Nfrutc)
     integer WS_1, NS_1
     Integer JCropDay
+    Real SQABZT,BOLABZT,LVSLOS!,GBZ2
+    Real BMAIN, stress_index, PPLANT
     Real RIC(366),RH_DC(366),TDayC(366), TNytC(366), TAvgC(366),SRIc(366)
     Real Windc(366),daylngc(366),rainc(366),t_air, t_aird
     Real RH_DCC,TDAYCC ,TNYTCC ,TAVGCC ,SRICC ,WINDCC ,DAYLNGCC ,RAINCC 
@@ -132,7 +135,7 @@
      character WeatherFile*256, TimeFile*256, BiologyFile*256,&
         ClimateFile*256, NitrogenFile*256, SoluteFile*256,&
         ParamGasFile*256,SoilFile*256,&
-        ManagementFile*256,DripFile*256,&
+        ManagementFile*256,IrrigationFile*256,DripFile*256,&
         WaterFile*256, WaterBoundaryFile*256,&
         PlantGraphics*256,InitialsFile*256,  VarietyFile*256,&
         NodeGraphics*256,ElemGraphics*256,&
@@ -207,7 +210,7 @@
       Common / DataFilenames / Starter, WeatherFile, TimeFile, &
                BiologyFile,ClimateFile, NitrogenFile, SoluteFile,&
                ParamGasFile, SoilFile,& 
-               ManagementFile,DripFile,&
+               ManagementFile,IrrigationFile,DripFile,&
                WaterFile, WaterBoundaryFile,& 
                PlantGraphics,InitialsFile,VarietyFile,&
                NodeGraphics,ElemGraphics,NodeGeomFile,&
@@ -412,13 +415,14 @@
       COMMON / Weather / CDayOfYear, CITIME, CIPERD, CWATTSM(24),      &
       CPAR(24), CTAIR(24), CCO2, CVPD(24), CWIND, CPSIL_,              &
       CLATUDE, CLAREAT, CLAI
-      REAL NRATIO, PGR, PNN, transpiration, temperature, SunlitLAI,     &
+      REAL NRATIO, PGR, PNN, transpiration, temperature, SunlitLAI,    &
       ShadedLAI, LightIC, transpiration_sunlitleaf,                    &
-      transpiration_shadedleaf, temp1, Ags, ARH ,StomConduc,Evaptran        !stomConduc                           !mmol H2o m-2 s-1
+      transpiration_shadedleaf, temp1, Ags, ARH ,StomConduc,           &
+      Evaptran        !stomConduc                           !mmol H2o m-2 s-1
 
-      COMMON / Plant / NRATIO, PGR, PNN, transpiration, temperature,    &
+      COMMON / Plant / NRATIO, PGR, PNN, transpiration, temperature,   &
       TLAI, SunlitLAI, ShadedLAI, LightIC,                             &
       transpiration_sunlitleaf, transpiration_shadedleaf,              & 
-      temp1, Ags, ARH, stomConduc,Evaptran  
+      temp1, Ags, ARH, stomConduc, Evaptran  
  !-----------------------------------------------------------------------------------     
 	end module common_block

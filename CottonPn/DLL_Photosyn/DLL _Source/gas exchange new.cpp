@@ -249,7 +249,7 @@ double CGas_exchange_new::set_PSIleafeffect(double pressure, const TInitInfo inf
     // sf = 2.8; phyf = -0.6;
 	//  sf = 5.3; phyf = -.15;//10. 0.02--------------
 	//sf = 8.3; phyf = -.08;
-	sf = 4.2; phyf = -0.15;
+	sf = 2.3; phyf = -0.15;
 	//if (pressure < -0.05) 
 	//if (pressure < phyf)
 	 

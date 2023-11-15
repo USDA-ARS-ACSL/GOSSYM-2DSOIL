@@ -432,7 +432,7 @@ C
      &       PotentialSoilEvaporation
           SeasonActualSoilEvap=SeasonActualSoilEvap+ActualSoilEvap
 C        Nitrogen flux conversion from g per slab to g per plant   
-         nitrogenFlux= nitrogenFlux/gridWidth
+         nitrogenFlux= nitrogenFlux/gridWidth*10**5
 C     Gas unit conversion to ugCo2/cm2
           Surface_Gas_Flux=Surface_Gas_Flux/gridWidth    ! Unit ugCo2 per plant area
           
