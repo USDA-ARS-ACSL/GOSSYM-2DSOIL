@@ -353,4 +353,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+<<<<<<< HEAD
 
+=======
+/2DSOIL/2DGOSSYM.u2d
+/Test_Run
+>>>>>>> e24dc6e (all changes from adding mulch and gases)
