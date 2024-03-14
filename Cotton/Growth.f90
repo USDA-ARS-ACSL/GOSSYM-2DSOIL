@@ -18,7 +18,7 @@
     PFAREA = 0. !PfAREA: AREA OF LEAf AT PREFRUITING NODE
     AREA = 0.   !Total leaf area
     
-    
+  
     !All the variables are for 1 plant or per plant
     !Number of plants in the soil slab = Popslab
     !Slab (in plan) = (row width cm * 1cm) if plant is in the middle
@@ -75,16 +75,16 @@
     ! The output from RutGro(0) is the SPDWRT, which is the sum of the potential delta weight of roots over all cells in gms.This considers root growth reduction due to soil impedance and other root growth stress factors
     ! The same is currently calculated in the Carbon_Partitioning.for. The proportional reduction of root growth due to mechanical resistance, partial pressure of soil oxygen, soil temperature, and other physical causes are taken in to consideration
  
-    SPDWRT = TSPDWR/popslab     !TSPDWR- SUM OF POTENTIAL DELTA WEIGHT OF ROOTS OVER ALL CELLS, GMS.
+    SPDWRT = potenRootWgt/popslab     !potenRootWgt- SUM OF POTENTIAL DELTA WEIGHT OF ROOTS OVER ALL CELLS, GMS.
+    
     SPDWRD = SPDWRT*DAYTYM      !SPDWRD- TOTAL POTENTIAL ROOT GROWTH DURING THE DAY
     SPDWRN = SPDWRT*NYTTYM      !SPDWRN- TOTAL POTENTIAL ROOT GROWTH DURING THE NIGHT
 
 
     ! *** Calculate root/shoot correction factors for potential root,
     ! *** stem amd leaf growth . Source: AVI BEN-PORATH PHD THESIS.
-    
-    call rootshootratio         !SPDWRN and SPDWRD are modified based on the root shoot ratio
-
+      call rootshootratio         !SPDWRN and SPDWRD are modified based on the root shoot ratio
+ 
     ! *** Calculate carbohydrate demand of each organ and the whole plant
  
     CDSTEM = PDSTMD + PDSTMN    !Cdstem [dryweight (ch20) in g/plant]    
@@ -92,11 +92,11 @@
     CDLEAF = SPDWLD + SPDWLN 
     CDSQAR = SPDWSQ
     CDBOLL = SPDWBO
-    
-    !Total carbohydrate demand 
+        !Total carbohydrate demand 
     CD = CDSTEM + CDLEAF + CDROOT + CDSQAR + CDBOLL 
     CPOOL = PN + RESC           ! Total available pool of carbohydrate from todays increment of photosynthate production + reserve carbon from earlier days
-    
+
+
     ! *** Calculate carbohydrate stress (CSTRES)
     call Carbon_stress
 
@@ -115,9 +115,8 @@
 
     ! *** Call NITRO to get today's N stress
     CALL NITRO
-      !       Write(*,*)  Rootwt, stemwt, leafwt, z, pn
-    
-
+ 
+                  
     IF(LEAFWT.gt.0.0) then
 
         ! *** Calculate excess carbohydrate created by N stress
@@ -188,8 +187,7 @@
       
         AREA = AREA + PFAREA            !total leaf area[dm2], unit conversion from cm2 to dm2 for the area is done in pfleafarea routine 
         LAI = AREA/POPFAC               !POFAC [dm2 ground area per plant]
-        
-        ! *** CALCULATE stem and root GROWTH
+! *** CALCULATE stem and root GROWTH
         SDWSTM = CDSTEM * VSTRES
         RCH2O1  = CDROOT * RSTRES       !Root carbohydrate supply per plant [gm of c/plant]
         
@@ -201,6 +199,8 @@
         !pcrl:minimum carbon needed to grow roots [g of c/day/slab] 
 
         !Sending PCRQ and PCRL to the 2D soil carbon partitioning
+        
+        
         PCRQ=RCH2O1*popslab!  X popslab:  per plant to per slab
         PCRL=RCH2O1*popslab
         RCH2O=PCRSD/popslab  ! /popslab: per slab to per plant   !RCH2O is [g of C/plant]
@@ -669,14 +669,18 @@
         FACNYT = NYTTYM *AMIN1(1.0,0.2+WSTRST) * CALBRT(14)
         PDSTMD = (0.1 + 0.02 * KDAY) * FACDAY
         PDSTMN = (0.1 + 0.02 * KDAY) * FACNYT
+
     ELSE
         !         PDSTMD=(0.2 + 0.06 * (STEMWT-STMWT(KDAY-32)))*DAYTYM*CALBRT(15)
         !         PDSTMN=(0.2 + 0.06 * (STEMWT-STMWT(KDAY-32)))*NYTTYM*CALBRT(15)
         FACDAY = DAYTYM *AMIN1(1.0,0.2+WSTRST) * CALBRT(15)
         FACNYT = NYTTYM *AMIN1(1.0,0.2+WSTRST) * CALBRT(15)
+                        !PDSTMD=(0.2 + 0.06 * (STEMWT-STMWT(KDAY-32))) * FACDAY
+                        !PDSTMN=(0.2 + 0.06 * (STEMWT-STMWT(KDAY-32))) * FACNYT
         PDSTMD=(0.2 + 0.06 * (STEMWT-STMWT(KDAY-32))) * FACDAY
         PDSTMN=(0.2 + 0.06 * (STEMWT-STMWT(KDAY-32))) * FACNYT
     ENDIF
+    
     RETURN
     END
 
@@ -714,7 +718,7 @@
     ! *** IF ROOT/SHOOT (RUTSUT) RATIO IS BELOW THE TARGET (RATIO)
     ! *** INCREASED ROOT GROWTH POTENTIAL AND DECREASE STEM AND
     ! *** LEAF GROWTH POTENTIAL.
-
+ 
     IF(RUTSUT.LT.RATIOD) THEN
         DRUT = RATIOD/RUTSUT ! INCREASE
         DTOP = RUTSUT/RATIOD ! DECREASE
@@ -747,6 +751,7 @@
         PDSTMN = PDSTMN * NTOP
         SPDWLN = SPDWLN * NTOP
     ENDIF
+    
     RETURN
     END
 
@@ -759,7 +764,8 @@
     use common_block
 
     CSTRES = CPOOL / CD
-    IF(CSTRES.LE.1.) THEN
+   
+    IF(CSTRES.LE.1.) THEN  !if cpool <cd
         RESC = 0.
     ELSE
         CSTRES = 1.
@@ -767,12 +773,14 @@
         DUMY11 = 0.3*LEAFWT
         IF(RESC.GT.DUMY11) THEN !Reserve can be upto 30% of leaf weight
             XTRAC  =  XTRAC + RESC - DUMY11 !XTRAC: Extra crbohydrate beyond an increase in 30% leaf weight: this is permenanlty used for the root at the base of the plant
+            
             RESC   = DUMY11 !whats reserved for the 30% of leaf weight
             CSTORE = 1.0
         ELSE
             CSTORE=RESC/DUMY11
         ENDIF
     ENDIF
+
     RETURN
     END
 
@@ -790,7 +798,7 @@
     !  ************************************************************
     !
     use common_block
-
+    real npoolava,npoolreq
     NF = 1.
     SEEDR1 = 0.!SEED NITROGEN REQUIREMENT FOR GROWTH
     BURADD = 0.
@@ -829,8 +837,8 @@
     !npool1 from soil2d is in [gram/day/slab], it should be converted to [gram/day/plant] 
     !npool=(npool1/popslab)+resn
     NPOOL=(NPOOL1/popslab)+RESN    !npool1/popslab: is the nitrogen supply [g n/day/plant] !no3 to n and nh4 to n is already done in 2dsoil
-   ! Write(*,*) Npool
-     
+  
+    npoolava=npool 
     !the following represets potential growth requirement
     !calculate the nitrogen required for new growth in each class of vegetative
     !organs and in the total vegetative structure. the coefficients are the
@@ -863,7 +871,7 @@
         BURADD = BURR1  + BURMIN
         SEDADD = SEEDR1
     ENDIF
-    
+      
     !multiplying with popslab coverts [g N/pant] to [g N/ slab]
     !multipying with 1.0e-6 convert from [g] to [microg]
     !Nitrodemand (nitrogen) is converted to Nitrate in Solute uptake routine in soil2d
@@ -889,15 +897,15 @@
         ELSE
             NV = NPOOL / REQV
             IF(NV.GT.1.) NV = 1.
+            IF(NV.lT.0.1) NV = 0.1
         ENDIF
     ENDIF
-  
+   Nratio=npoolava-REQ1 / REQV+ROOTR1-REQ1  !required N and Available N for all plant parts except ReQ1
+   
    ! VEGETATIVE GROWTH SECTION
-
     SLEAFN = SLEAFN + LEAFR1 * NV   !this is the nitrogen  added to each class of vegetative organ
     STEMN  = STEMN  + STEMR1 * NV
     ROOTN  = ROOTN  + ROOTR1 * NR
-
     ! BOLL GROWTH SECTION
 
     BURRN = BURRN + BURADD
@@ -914,7 +922,8 @@
     !  if (pltn-plantn) -(supno3+supnh4) is - , then all came from supno3
     !  supnh4 & xtran must be +.
    
-    VEGWT  = LEAFWT + STEMWT + ROOTWT  !Calculate the dry weight of the vegetative organs
+      
+      VEGWT  = LEAFWT + STEMWT + ROOTWT  !Calculate the dry weight of the vegetative organs
     
     !inorder to Allocate the excess nitrogen to the various vegetative structures in
     !proportion to their dry weight.
@@ -1102,15 +1111,13 @@
 
 
     if(PSIL_G.le.-2.5) PSIL_G = -2.5
-    ! write(*,*) Psil_G
-    H2OIndex = (4.2904 - PSIL_G*(0.6491+0.9737*PSIL_G))/4.
+       H2OIndex = (4.2904 - PSIL_G*(0.6491+0.9737*PSIL_G))/4.
     IF(H2OIndex.LT.0.15) H2OIndex = 0.15
     IF(H2OIndex.GT.1.0) H2OIndex = 1.0
    
     N00 = NUMPFN + NFBR(1)
-    !NOO= NUM OF PREFRUTING NODES
+    !NOO= NUM OF PREFRUTING NODES+number of nodes in the frist vegitative branch
     !NFBR - (K) - NUMBER OF fRUITING BRANCHES ON THE VEGETATIVE BRANCH
-    
     DO I=1,N00
         XMNODAGE(I) = XMNODAGE(I)+DURATION * CALBRT(44)
         IF(XMNODAGE(I).LT.1.0) THEN
@@ -1193,6 +1200,7 @@
                 XMNODLTH(I) = XMNODLTH(I) + GROWFAC
             ENDIF
         ENDIF
+         
     ENDDO
 
     Z = Z + DZ
@@ -1577,7 +1585,7 @@
     CDLAYV = 1.0 +FSTRES * CALBRT(4) + FSTRES**2 * CALBRT(5)!CARBOHYDRATE DELAYS IN VEGETATIVE BRANCHES
     IF (CDLAYV.GT.1.0) CDLAYV = 1.0
     IF (CDLAYV.LT.0.0) CDLAYV = 0.0
-    RETURN
+     RETURN
     END
 
 
@@ -2199,7 +2207,7 @@
     use common_block
 
     BOLLOS = 0.
-    GBZ2   = 0.
+    GBZ2   = 0
     ABZ    = 0.
     SUMSQR = 0.
     SUMBOL = 0.
@@ -2221,6 +2229,7 @@
     ! *** ABSCISED LEAF. IT IS ASSUMED THAT DEAD LEAVES CONTAIN 1 % N.
     ! *** ABSCISE PRE-FRUTING LEAVES
     !
+    
     DO 4 J=1,NUMPFN
         IF((AGEPFN(J).GE.DROPLF).AND.(PFAL(J).GT.0.)			&
             .AND.(LAI.GT.0.3)) THEN
@@ -2234,6 +2243,7 @@
             SLEAFN = SLEAFN - PFWL(J) * 0.01
             NLOSS  = NLOSS + (PFWL(J) * 0.01)
             PFWL(J) = 0.
+            LVSLOS = LVSLOS+1
             IF((DEFBGN.GT.0).AND.(DAYNUM.GT.DEFBGN))			 &
           !                  IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN))			 &
 
@@ -2260,6 +2270,7 @@
                     LAI = AREA/POPFAC
                     MLAREA(K,L) = 0.
                     MLEAFW(K,L) = 0.
+                    LVSLOS = LVSLOS+1
                      IF((DEFBGN.GT.0).AND.(DAYNUM.GT.DEFBGN))		 &
                     !         IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN))		 &
                         LVSLOS = LVSLOS+1
@@ -2279,6 +2290,7 @@
                     LAI = AREA/POPFAC
                     LAREA(K,L,M) = 0.
                     LEAFW(K,L,M) = 0.
+                    LVSLOS = LVSLOS+1
                     IF((DEFBGN.GT.0).AND.(DAYNUM.GT.DEFBGN))			   &
             !        IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN))			   &
                         LVSLOS = LVSLOS+1
@@ -2339,7 +2351,7 @@
     IF(FCODE(1,1,1).gt.0) then
 
 
-        IF(FRATIO.LT.CALBRT(8)) THEN
+        IF(FRATIO.LT.CALBRT(8)) THEN                        !RATIO Of GREEN BOLLS WEIGHT TO TOTAL PLANT WEIGHT
             FLOSS= (CALBRT(9)-3.607*FSTRES+1.605*FSTRES**2)*CALBRT(54)
         ELSE
             FLOSS=(CALBRT(10)-3.607*FSTRES+1.605*FSTRES**2)*CALBRT(55)
@@ -2482,6 +2494,8 @@
         !BOLOSS(JDAY) = BOLABZ
         SQLOSS(DAYNUM) = SQABZ
         BOLOSS(DAYNUM) = BOLABZ
+        BOLABZT=BOLABZT+BOLABZ
+        SQABZT=SQABZT+SQABZ
         ABZ = SQABZ + BOLABZ
 
     endif
@@ -2715,3 +2729,119 @@
 
     RETURN
     END
+
+    
+    subroutine fiberQualityParameters()       !FQ
+
+    use common_block
+    !BOLWGT(K,L,M)! weight of each boll
+    !COTXX !Total boll weight
+    !FQS_Plant= plant level quality index
+
+    WRITE(lstng,1700) "VegB","FB","FBN",           &
+        "Temp",  "LeafN (g/kg)", "LWP (Mpa)", "Bwt[lb/acre]"
+1700 FORMAT (A10,A10,A10,A10, 3(A15))
+
+    DO K = 1,NVBRCH                                                             !Veg
+        NBRCH = NFBR(K)
+        DO L=1,NBRCH                                                            !Fruting Branch
+            NNID = NNOD(K,L)
+            DO M=1,NNID                                                         !Node
+
+                  if (AVGLWP(K,L,M).gt.-1.7 ) AVGLWP(K,L,M)=-1.7                  ! Limits for running avg lwp
+                  if (AVGLWP(K,L,M).lt.-2.5 ) AVGLWP(K,L,M)=-2.5
+
+                  if (AVGT(K,L,M).lt.18)AVGT(K,L,M)=18.                           ! Limits for running avg temp
+                  if (AVGT(K,L,M).gt.30)AVGT(K,L,M)=30.
+
+                  if (AVGLEAFN(K,L,M)*1000.lt. 25.) AVGLEAFN(K,L,M)=25./1000.     !AVGLEAFN(K,L,M)*1000 is in gN/kg leafweight
+                  if (AVGLEAFN(K,L,M)*1000.gt. 47.) AVGLEAFN(K,L,M)=47./1000.
+
+                write(lstng,1701)K,L,M, AVGT(K,L,M), AVGLEAFN(K,L,M)*1000,&
+                    AVGLWP(K,L,M), OpenBollYield(K,L,M)
+1701            FORMAT(6X,I2,10X,I2,7X,I2,4(4x,f9.2) )
+
+
+                Red_Fac_Strength_LWP=    (1.50 + 0.309* AVGLWP(K,L,M))              !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
+                Red_Fac_Strength_LeafN =(0.87 + (0.0021*AVGLEAFN(K,L,M)*1000.0))    !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
+
+                if (Red_Fac_Strength_LWP.gt. 1.) Red_Fac_Strength_LWP=1
+                if (Red_Fac_Strength_LeafN.gt. 1.) Red_Fac_Strength_LeafN=1
+                if (Red_Fac_Strength_LWP.lt. 0.) Red_Fac_Strength_LWP=0
+                if (Red_Fac_Strength_LeafN.lt. 0.) Red_Fac_Strength_LeafN=0
+
+                FQS(K,L,M)=                                     &                   ! Fiber strength
+                    (21.817 + 0.341* AVGT(K,L,M))*              &                   !  Potential value = f(temp)
+                    Red_Fac_Strength_LWP*                      &
+                    Red_Fac_Strength_LeafN
+
+                Red_Fac_Length_LWP=    (1.35  + 0.220*AVGLWP(K,L,M))                !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
+                Red_Fac_Length_LeafN = (0.928 + 0.001*AVGLEAFN(K,L,M)*1000.0)       !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
+
+                if (Red_Fac_Length_LWP.gt. 1.) Red_Fac_Length_LWP=1
+                if (Red_Fac_Length_LeafN.gt. 1.) Red_Fac_Length_LeafN=1
+                if (Red_Fac_Length_LWP.lt. 0.) Red_Fac_Length_LWP=0
+                if (Red_Fac_Length_LeafN.lt. 0.) Red_Fac_Length_LeafN=0
+
+                FQL(K,L,M)=                                     &                   ! Fiber length
+                    (11.49 + 1.75*AVGT(K,L,M)                   &
+                    -0.04*AVGT(K,L,M)*AVGT(K,L,M))*             &
+                    Red_Fac_Length_LWP*                         &
+                    Red_Fac_Length_LeafN
+
+                Red_Fac_Micro_LWP=    (0.44-0.203*AVGLWP(K,L,M))                    !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
+                Red_Fac_Micro_LeafN =(1.157-0.007*AVGLEAFN(K,L,M)*1000.0)           !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
+
+                if (Red_Fac_Micro_LWP.gt. 1.) Red_Fac_Micro_LWP=1
+                if (Red_Fac_Micro_LeafN.gt. 1.) Red_Fac_Micro_LeafN=1
+                if (Red_Fac_Micro_LWP.lt. 0.) Red_Fac_Micro_LWP=0
+                if (Red_Fac_Micro_LeafN.lt. 0.) Red_Fac_Micro_LeafN=0
+
+                FQM(K,L,M)=                                     &                   ! Micronaire
+                    (-6.88 + 0.843*AVGT(K,L,M)                  &
+                    -0.017* AVGT(K,L,M)*AVGT(K,L,M))*           &
+                    Red_Fac_Micro_LWP*                          &
+                    Red_Fac_Micro_LeafN
+
+                Red_Fac_Uni_LWP=   (1.16 +  0.098*AVGLWP(K,L,M))                    !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
+                Red_Fac_Uni_LeafN =(1.005-0.0002*AVGLEAFN(K,L,M)*1000.0)            !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
+
+                if (Red_Fac_Uni_LWP.gt. 1.) Red_Fac_Uni_LWP=1
+                if (Red_Fac_Uni_LeafN.gt. 1.) Red_Fac_Uni_LeafN=1
+                if (Red_Fac_Uni_LWP.lt. 0.) Red_Fac_Uni_LWP=0
+                if (Red_Fac_Uni_LeafN.lt. 0.) Red_Fac_Uni_LeafN=0
+                FQU(K,L,M)=                                     &                   ! Uniformity (%)
+                    (55.04 + 2.368*AVGT(K,L,M)                  &
+                    -0.047 *AVGT(K,L,M)*AVGT(K,L,M))*           &
+                    Red_Fac_Uni_LWP*                            &
+                    Red_Fac_Uni_LeafN
+
+                FQS_Plant=FQS_Plant+FQS(K,L,M)* OpenBollYield(K,L,M)                !Multiplying by the open boll weight, for doing the mass weighted avg
+                FQL_Plant=FQL_Plant+FQL(K,L,M)* OpenBollYield(K,L,M)
+                FQM_Plant=FQM_Plant+FQM(K,L,M)* OpenBollYield(K,L,M)
+                FQU_Plant=FQU_Plant+FQU(K,L,M)* OpenBollYield(K,L,M)
+
+
+            end do
+        end do
+    end do
+
+    !mas of the boll weighted average is estimated for the entire plant
+    if (sum(OpenBollYield).gt.0.) then
+        FQS_Plant=FQS_Plant/sum(OpenBollYield)                                               !COTXX is the total open boll weight
+        FQL_Plant=FQL_Plant/sum(OpenBollYield)
+        FQM_Plant=FQM_Plant/sum(OpenBollYield)
+        FQU_Plant=FQU_Plant/sum(OpenBollYield)
+
+        Write(lstng,*) 'Fiber_Quality Summary'
+        Write(lstng,*) 'Plant_FQ_strength_(g/tex) =', FQS_Plant
+        Write(lstng,*) 'Plant_FQ_length_(mm)      =', FQL_Plant
+        Write(lstng,*) 'Plant_FQ_Micronare_(-)    =', FQM_Plant
+        Write(lstng,*) 'Plant_FQ_Uniformity(%)    =', FQU_Plant
+
+    else
+        Write(lstng,*) 'Fiber Quality Summary'
+        Write(lstng,*) 'There are no open bolls in the plant'
+    end if
+    return
+    end
