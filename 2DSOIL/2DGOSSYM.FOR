@@ -3,7 +3,7 @@
 *     2DSOIL  - Numerical model of two-dimensional soil environment    *
 *                           for field crops                            *
 *                                                                      *
-*                              Release 3.0.0                              *
+*                              Release 3.0.0.1                              *
 *||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*
      
       !DEC$ ATTRIBUTES DLLIMPORT:: Crop
@@ -28,9 +28,9 @@
 C SetSurfaceD --  reading daily weather
 C SetSurfaceH --  reading hourly weather
       if ((HourlyWeather+DailyWeather.gt.1).or.
-     !((HourlyWeather+DailyWeather).eq.0))then
-	Write (*,*) "error in weather file type"
-      Endif
+     !   ((HourlyWeather+DailyWeather).eq.0))then
+              Write (*,*) "error in weather file type"
+        Endif
       if (HourlyWeather.eq.1) Call SetSurfaceH()
       if (DailyWeather.eq.1) Call SetSurfaceD()                         
       Call SetTDB()
@@ -58,11 +58,13 @@ cccz surface water
       Call SoluteMover()
       Call HeatMover()
       Call GasMover()
-C     Call MacroChem()
-c     Call Water_Mass_Balance() 
-      if (outputSoilYes.gt.0) then
-            Call Output()
-      endif
-    
+
+C      Call MacroChem()
+c      Call Water_Mass_Balance() 
+      if (outputSoilYes.gt.0) then 
+         Call Output()
+        endif
+
+      
       Goto 1
       End         

@@ -2748,14 +2748,14 @@
             NNID = NNOD(K,L)
             DO M=1,NNID                                                         !Node
 
-                !  if (AVGLWP(K,L,M).gt.-1.7 ) AVGLWP(K,L,M)=-1.7                  ! Limits for running avg lwp
-                !  if (AVGLWP(K,L,M).lt.-2.5 ) AVGLWP(K,L,M)=-2.5
+                  if (AVGLWP(K,L,M).gt.-1.7 ) AVGLWP(K,L,M)=-1.7                  ! Limits for running avg lwp
+                  if (AVGLWP(K,L,M).lt.-2.5 ) AVGLWP(K,L,M)=-2.5
 
-                !  if (AVGT(K,L,M).lt.18)AVGT(K,L,M)=18.                           ! Limits for running avg temp
-                !  if (AVGT(K,L,M).gt.30)AVGT(K,L,M)=30.
+                  if (AVGT(K,L,M).lt.18)AVGT(K,L,M)=18.                           ! Limits for running avg temp
+                  if (AVGT(K,L,M).gt.30)AVGT(K,L,M)=30.
 
-                !  if (AVGLEAFN(K,L,M)*1000.lt. 25.) AVGLEAFN(K,L,M)=25./1000.     !AVGLEAFN(K,L,M)*1000 is in gN/kg leafweight
-                !  if (AVGLEAFN(K,L,M)*1000.gt. 47.) AVGLEAFN(K,L,M)=47./1000.
+                  if (AVGLEAFN(K,L,M)*1000.lt. 25.) AVGLEAFN(K,L,M)=25./1000.     !AVGLEAFN(K,L,M)*1000 is in gN/kg leafweight
+                  if (AVGLEAFN(K,L,M)*1000.gt. 47.) AVGLEAFN(K,L,M)=47./1000.
 
                 write(lstng,1701)K,L,M, AVGT(K,L,M), AVGLEAFN(K,L,M)*1000,&
                     AVGLWP(K,L,M), OpenBollYield(K,L,M)

@@ -292,7 +292,7 @@
                 DO 140 K=L,14
                     PGRBRD(K:K)=' '
 140             CONTINUE
-                IF(((PGRBRD(1:3).EQ.'pix').OR.(PGRBRD(1:3).EQ.'PIX')) &         
+                IF(((PGRBRD(1:3).EQ.'Pix').OR.(PGRBRD(1:3).EQ.'PIX')) &         
                     .AND.(RTEPGR.GT.0.01)) THEN
                     IPX=IPX+1                                                   !Number of pix application count
                     CALL CALTOJULAN(PGRDTE,IDUM1,IDUM2,IDUM3,PIXDAY(IPX))
@@ -303,7 +303,7 @@
                     IF(PGUNIT.EQ.5) DUMRTE=8./RTEPGR                            !Checking the units of the rate of application
                     PIXPPA(IPX)=DUMRTE                                          !Pix rate
                     PIXMTH(IPX)=PGRMTH                                          !Pix method
-                ELSEIF(((PGRBRD(1:4).EQ.'prep').OR.	&
+                ELSEIF(((PGRBRD(1:4).EQ.'Prep').OR.	&
                     (PGRBRD(1:4).EQ.'PREP')).AND.(RTEPGR.GT.0.01)) THEN
                     IPRP = IPRP + 1                                             !Number of prep applicaiton count
                     CALL CALTOJULAN(PGRDTE,IDUM1,IDUM2,IDUM3,PRPDATE(IPRP))
@@ -318,10 +318,10 @@
                     (PGRBRD(1:5).EQ.'DROPP').OR. &
                     (PGRBRD(1:7).EQ.'HARVADE').OR. &
                     (PGRBRD(1:8).EQ.'GRAMOXON').OR.	&
-                    (PGRBRD(1:3).EQ.'def').OR. &
-                    (PGRBRD(1:5).EQ.'dropp').OR. &
-                    (PGRBRD(1:7).EQ.'harvade').OR. &
-                    (PGRBRD(1:8).EQ.'gramoxon')).AND. &
+                    (PGRBRD(1:3).EQ.'Def').OR. &
+                    (PGRBRD(1:5).EQ.'Dropp').OR. &
+                    (PGRBRD(1:7).EQ.'Darvade').OR. &
+                    (PGRBRD(1:8).EQ.'Dramoxon')).AND. &
                     (RTEPGR.GT.0.01)) THEN
                     IDEF = IDEF + 1                                             !Rest all the methods are considered as Def
                     CALL CALTOJULAN(PGRDTE,IDUM1,IDUM2,IDUM3,DEFDATE(IDEF))

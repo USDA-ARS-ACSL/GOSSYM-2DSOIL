@@ -345,8 +345,6 @@ C dt need to do more testing for RGCF6, add later
         RGCF(n) = AMAX1(RGCF(n),0.0)
         RGCF(n) = AMIN1(RGCF(n),1.0)
 
-      RGCF(n) = AMAX1(RGCF(n),0.0)
-      RGCF(n) = AMIN1(RGCF(n),1.0)
 C
 C   CALCULATE POTENTIAL RATE OF CHANGE IN ROOT DRY WEIGHT IN EACH
 C   SOIL CELL
@@ -574,7 +572,7 @@ C   DETERMINE TOTAL WATER UPTAKE BY ALL NEW ROOTS AND WEIGHTED
 C   AVERAGE SOIL WATER POTENTIAL WHEN:
 C   I. ROOTS GET ALL THE CARBON TRANSLOCATED
 C
-        WUPT(n1)=0.0
+        WUPT(n1)=0.0    ! rate of water uptake when water potential prevents shoot growth
         IF(LAI.EQ.0.0) Then
         WUPT(n1) = (((PSIS(n1) - PSILT)*DRL(n1))
      &   /(SR(n1) + RRRY + RVR(n1)))

@@ -38,13 +38,6 @@
      !         Num_nodes(Max_fert_nodes), node_Applied(Max_fert_times,
      !         Max_fert_nodes),Fert_times,fertilizerApplied,ModNum, 
      !         fert_depth(Max_fert_times)
-      t=time
-cccz Dennis: this part of initialization is out of lInput block, please pay attention if it is what you want    
-      
-      
-      
-     
-
       
       If(lInput.eq.1) then
       Num_nodes=0 
@@ -61,7 +54,6 @@ c find fertilizer section
         Read(40,*,Err=20)
         Read(40,*,Err=20) 
         Read(40,*,Err=20)
-
         Read(40,*,Err=20) Fert_times
         Read(40,*,Err=20)
         Read(40,*,Err=20)
