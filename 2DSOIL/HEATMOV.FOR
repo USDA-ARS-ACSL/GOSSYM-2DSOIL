@@ -24,7 +24,6 @@ C
         VClay(i)=BlkDn(i)*FracClay(i)/2.65
         VOrgM(i)=BlkDn(i)*FracOm(i)/1.0
         ThTot(i)=1-BlkDn(i)/2.65
-        il=il+1
       Enddo     
 *       
       Do i=1,NumNP
@@ -317,7 +316,7 @@ cSolve
              call OrthoMin(A,B1,B,NumNP,MBandD,NumNPD,IAD,
      !	            IADN,IADD,A1,VRV,
      !                RES,RQI,RQ,QQ,QI,RQIDOT,ECNVRG,RCNVRG,ACNVRG,4,
-     !                MNorth,MaxItO)
+     !                MNorth,MaxItO,3)
       Else
           N1=NumNP-1
           Do 212 k=1,N1
@@ -375,8 +374,6 @@ cSolve
         ThOld(i)=ThNew(i)
       Enddo
       
-      Return
-10    Call errmes(im,il)
       Return
       End
 *

@@ -24,7 +24,7 @@ C summary output variables
       Real SeasonRainfall, SeasonPotenTranspiration,
      &     SeasonActualTranspiration, SeasonPotenSoilEvap,
      &     SeasonActualSoilEvap,SeasonActualInfil,
-     &     SumArrayTh, gridWidth
+     &     SumArrayTh, gridWidth,MaxY
       Character*10 date, Stime
 cccz output for runoff module
       double precision SurInput_Flux,Surface_Flux,Bottom_Flux,
@@ -53,8 +53,9 @@ cccz output for runoff module
      &     Runoff,Runoff_02,Runoff_03,
      &     ActualInfil,ActualInfil_02,ActualInfil_03,
      &     FluxGas(NumGD),Surface_Gas_Flux(NumGD),
-     $     SumArrayTh(NumNPD), hourCount,
-     $     nitrogenFlux,Flux_drain, gridWidth
+     &     SumArrayTh(NumNPD), hourCount,
+     &     nitrogenFlux,Flux_drain, gridWidth,
+     &      ThetaFull, MaxY
       Common /SurfaceWaterBalance/ 
      &     SurInput_Flux,Surface_Flux,Bottom_Flux,
      &     Runoff_Flux,Runoff_Terminal_Flux,
@@ -156,11 +157,11 @@ C G05 file  Surface Graphics
      &       "N_Leach,","Runoff,",
      &      "cover,","PSIM,", "SeasPSoEv,","SeasASoEv," ,"SeasPTran,",
      &      "SeasATran,","SeasRain,",    
-     &      "SeasInfil,","CO2FLux,","O2FLux"
+     &      "SeasInfil,","ThetaAvail,","CO2FLux,","O2FLux"
 
 c Flux Graphics       
        Write(84,20) "Date_time,", "Date,","Flux,","SoilEA,",
-     &   "RNS,", "WATTSM,","RNC,","WATPOT,","WATACT,",
+     &   "WATTSM,", "RNS,", "RNC,","WATPOT,","WATACT,",
      &    "WATRAT,", "UpwardLW,",
      &   "DifWat,","Cloud,","Shadow,","DIfInt,","Rowinc,", "PARInt,",
      &   "RADInt"
@@ -172,14 +173,15 @@ c Organic Matter Graphics
      &            "Manure_N,", "Manure_C,", "Root_N,", "Root_C"
 c Runoff Mass Balance     
 cccz initialize for surface runoff
-       write(99,'(8A20)') 'time','Date','Rainfall','Inifiltration',
-     &    'Runoff@end', 'WaterStorage', 
-     &    'LeftDischarge','RightDischarge'
+       write(99,'(8A20)') 'time,','Date,','Rainfall,','Inifiltration,',
+     &    'Runoff@end,', 'WaterStorage,', 
+     &    'LeftDischarge,','RightDischarge'
        
 cccz -----------------------------------------------------------------------
 cccz initialize the mulch output file (analogy to the soil output g03)
        Open(2102,file=MassBalanceMulchFileOut)
-       Write(2102,2103) "Date_time","Date","X","Y","hNew","thNew","Temp"
+       Write(2102,2103) "Date_time,","Date,","X,","Y,","hNew,",
+     &  "thNew,","Temp"
        iday=int(time)
        call caldat(iday,mm,id,iyyy) 
        write (date,'(i2.2,A1,i2.2,A1,i4.4)') mm,'/',id,'/',iyyy  
@@ -188,6 +190,40 @@ cccz initialize the mulch output file (analogy to the soil output g03)
      &     mulchNodeCoord(n,2),MulchNodehNew(n),MulchNodeThNew(n),
      &     MulchNodeTmpr(n)
        enddo
+       
+C calculate the full amount of water in the domain
+        MaxY=maxVal(Y) 
+        ThetaFull=0.0
+        Do n=1,NumEl
+		   NUS=4
+		   if(KX(n,3).eq.KX(n,4)) NUS=3
+		   Sum1=0.
+		   Sum2=0.
+c*         Loop on subelements
+		   do k=1,NUS-2
+			 i=KX(n,1)
+			 j=KX(n,k+1)
+			 l=KX(n,k+2)
+			 Ci=x(l)-x(j)
+			 Cj=x(i)-x(l)
+			 Ck=x(j)-x(i)
+			 Bi=y(j)-y(l)
+			 Bj=y(l)-y(i)
+			 Bk=y(i)-y(j)
+			 AE=(Ck*Bj-Cj*Bk)/2.
+			 m=MatNumN(i)
+			 thAWi=ThFull(MatNumN(i))
+			 thAWl=ThFull(MatNumN(l))
+			 thAWj=ThFull(MatNumN(j))
+               if ((MaxY-y(i)).le.100.0
+     &          .and.(MaxY-y(j)).le.100.0
+     &           .and.(MaxY-y(l)).le.100.0)  then
+               
+			   ThetaFull=ThetaFull+AE*(ThAWi+ThAWj+ThAWl)/3.
+               EndIf
+		   Enddo
+		Enddo
+
 cccz -----------------------------------------------------------------------
        
       Endif     !end initialization
@@ -231,12 +267,12 @@ C  pressure head and flux is calculated CodeW >0 indicates head is set at 0 and 
       	 do i=1,NumBp
 	     n=KXB(i)
 	     
-C calculate N flux in drainage, only consider flow out of the domain (<0) units are gN (convert from ug)	     
+C calculate N flux in drainage, only consider flow out of the domain (<0) units are g N/cm2 (convert from ug)	     
 	     if ((CodeW(n).eq.(-7)).or.(CodeW(n).eq.(2))
      &             .or.(CodeW(n).eq.(1))) then
 	        Flux_drain=Flux_drain+Q(n)*step
               nitrogenflux=nitrogenflux+min(0.0,Q(n))
-     &             *conc(n,1)*step*NO3mass_2_Nmass/1.0e6 
+     &             *conc(n,1)*step*NO3mass_2_Nmass/1.0e6              ! g N/cm2
       
            endif
 c case for evaporation
@@ -391,11 +427,8 @@ cccz
 
           
 * dt - value of awupss and pot_et are per half slab as calclated
-* in the water uptake code. EOMULT accounts for whether the slab
-* is a full or half (plant in the middle - full or edge -half)
-* multiply by 1/poprow * 100  to multiply be the amount of space between 
-* plants (cm) the scales the slab to the area corresponding to one
-* plant - hence the output is per plant
+* in the water uptake code. 
+* output is mm/cm2
 * 
 
        
@@ -414,7 +447,7 @@ C EO is the potential transpiration rate from Penman adjusted for plant cover, c
 c  potential_T_EO is the summation of EO which is soil surface evap from EO and the Penman equation.vi
 c EOR_p is a rough estimate of potential ET. p_ET is a better estimate using time step to 
 c  integrate rather than use an average
-c EOR is per slab
+c EOR is mm/cm2
            EOR_p=EOR*period/gridWidth*10.0 ! EOR comes from ET_demand from plant
  
 
@@ -431,22 +464,23 @@ C
           SeasonPotenSoilEvap=SeasonPotenSoilEvap+
      &       PotentialSoilEvaporation
           SeasonActualSoilEvap=SeasonActualSoilEvap+ActualSoilEvap
-C        Nitrogen flux conversion from g per slab to g per plant   
-         nitrogenFlux= nitrogenFlux/gridWidth*10**5
+C        Nitrogen flux conversion from g per slab to kg/ha   
+         nitrogenFlux= nitrogenFlux/gridWidth*10**5        !10^5= 10^4 m2/ha x 10^4 cm2/m2 / 10^3 g/kg
+C Calculate relative available water
+          ThetaRelative=RelativeWaterContent(X,Y, ThAvail,
+     &            NumNP, KX,NumELD, NumEl)
+     &        /ThetaFull
 C     Gas unit conversion to ugCo2/cm2
           Surface_Gas_Flux=Surface_Gas_Flux/gridWidth    ! Unit ugCo2 per plant area
-          
-          
+                
          Write(83,10) t,Date,PotentialSoilEvaporation, 
      &               ActualSoilEvap,p_ET_EO,
      &              p_ET, CurrentTrans,CumRain,ActualInfil,FLuxAct,
-cccz DT: you changed the name "bottomflux" to "Flux_Drain"
-cccz     &              bottomFlux, Runoff,cover, PSIM, SeasonPotenSoilEvap,
      &              Flux_drain, nitrogenFlux, Runoff_02,cover, PSIM, 
      &              SeasonPotenSoilEvap,
      &              SeasonActualSoilEvap, SeasonPotenTranspiration,
      &               SeasonActualTranspiration,  SeasonRainfall,  
-     &              SeasonActualInfil,
+     &              SeasonActualInfil, ThetaRelative,
      &              (Surface_Gas_Flux(jjj),jjj=1,NumG)
         
         
@@ -529,12 +563,12 @@ C format 5 is water, 6 is roots Vy is the last on on this lin
      &     T152, A5,T165,A8,T176,A8 )   ! format for nodal data header
   6   Format (1x,A16,T20,A5,T36,A2,T46,A2,T56,A5,T65,A7,T78,A7, T90,A6,
      &        T102, A6, T112, A11, T124, A8, T136, A8)
- 10   Format (1x,F17.6,',', A15,',',9(F16.3, ','), F14.6, ',',
-     &        11(F16.3, ','),F16.3)  !format for flux data
+ 10   Format (1x,F17.6,',', A15,',',9(F16.3, ','), F14.5, ',',                  !relative water content  
+     &        11(F16.3, ','),F16.3)  !format for flux data  [G03]
  13   Format (1x,F17.6,',',A15,',',15(F16.3, ','), F16.3)  ! format for second flux data [G06]
- 20   Format (1x,24A16)              !format for flux header
+ 20   Format (1x,25A16)              !format for flux header [G05]
  21   Format (1x,12A16)           ! format for Organic Matter header
-2103  Format (1x,A12,T20,A12,T49,A1,T64,A1,T76,A10,T95,A10,T109,A10)
+2103  Format (1x,A12,T20,A12,T49,A2,T64,A2,T75,A10,T95,A10,T109,A10)
 2104  Format (1x,F17.6,',',A15,',',4(F16.4,','),F16.4)     
       
       End        
@@ -611,3 +645,52 @@ c note output units are g/cm3 soil volume
   140   format (1x, F14.6,',', a12,',', 8(F11.2,','),F11.2, ',',F11.2)
        Return
        End
+      
+       
+C calculate relative water content for profile to 100 cm    
+C  returns the total cm of water in the domain - needs to be modified
+C  by grid width to get cm of water per cm of soil
+C this is  done after it is called
+  
+       
+      function RelativeWaterContent(X,Y, ThetaAvail,
+     !              NumNP, KX, NumElD, NumEl)
+      real X, Y, ThetaAvail, ThetaFull, ThetaRel,
+     !    cii, bii, AE,ThetaAvailAll, MaxY
+      integer NumNP, NMat, KX, NUS, K, i, j, l, n,
+     !        NumEl
+      
+      
+      Dimension Y(NumNP), X(NumNP), KX(NumELD,4), 
+     !         ThetaAvail(NumNP), 
+     !         cii(3), bii(3)
+            MaxY=maxVal(Y)
+            RelativeWaterContent=0.0
+      Do n=1,NumEl
+		   NUS=4
+		   if(KX(n,3).eq.KX(n,4)) NUS=3
+c*         Loop on subelements
+		   do k=1,NUS-2
+			 i=KX(n,1)
+			 j=KX(n,k+1)
+			 l=KX(n,k+2)
+			 Cii(1)=x(l)-x(j)
+			 Cii(2)=x(i)-x(l)
+			 Cii(3)=x(j)-x(i)
+			 Bii(1)=y(j)-y(l)
+			 Bii(2)=y(l)-y(i)
+			 Bii(3)=y(i)-y(j)
+			 AE=(Cii(3)*Bii(2)-Cii(2)*Bii(3))/2.
+               if ((MaxY-y(i)).le.100.0
+     &          .and.(MaxY-y(j)).le.100.0
+     &           .and.(MaxY-y(l)).le.100.0) 
+     &            then 
+                    RelativeWaterContent=RelativeWaterContent+(AE*
+     &               (ThetaAvail(i)+ThetaAvail(j)+ThetaAvail(l))/3.0)
+                  endif
+		   Enddo
+C       get upper limit of water available            
+       
+        Enddo      
+        Return
+        End

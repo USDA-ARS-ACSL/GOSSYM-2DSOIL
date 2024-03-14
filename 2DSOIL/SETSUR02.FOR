@@ -78,11 +78,12 @@ C**                                                                   **
       
       Parameter (PERIOD =1./24.)
       integer  m,CurYear, ModNum,ThisYear
-      Common /weather/ il,im,isol,ModNum, TMIN, TMAX,Gamma,
+      
+            Common /weather/ il,im,isol,ModNum, TMIN, TMAX,Gamma_psy,
      &   BEERS(24)
       
       double precision St,t
-      real gamma
+      real gamma_psy
       character*10 date
       Dimension CLIMAT(20),SDERP(9),SINALT(24),SINAZI(24),HRANG(24),
      &          SARANG(24),
@@ -251,7 +252,12 @@ C
       il=il+1
       Read (5,*,ERR=10)
 1111  il=il+1
-      Read (5,*,ERR=10) iDum, date
+      Read (5,*,ERR=10,iostat=IOSTAT) iDum, date
+      if (iostat<0) then
+         write(*,*) 'Premature end of weather file'
+         stop
+      end if
+      
       MDAY=julday(date)
 cdt changed from LE to LT since jday was always gt. time
       If (MDAY.LT.JDFRST) GO TO 1111
@@ -277,20 +283,16 @@ c
         Enddo
 c
 c Read meteodata
-c       
+c
         il=il-1
         BACKSPACE(5)
         il=il+1
-        Read(5,*,ERR=10) JDum,date,(CLIMAT(i),i=1,NCD)  !Jdum: dayof the year
-        !Climat 1 to NCD
-        !Climat(1)=Radiation [j/m2/day] /100000
-        !climat(2)= Tempertaure max [degreeC]
-        !climat(3)= Temperature min [degreeC]
-        !Climate(4)= Rain [mm/day]
-        !Climate (5) = Wind[km/hr]
-        !Climate (6) = Relative humidity
-        
-      JDAY=Julday(date)  ! Based on days from 1/1/1900
+        Read(5,*,ERR=10, iostat=IOSTAT) JDum,date,(CLIMAT(i),i=1,NCD)
+        if (iostat<0) then
+           write(*,*) 'Premature end of weather file'
+           stop
+        end if
+           JDAY=Julday(date)
 c    SInce some routines need the day of the calendar year we need a variable to hold this
 C    since the julian day is referenced to a time longer in the past
         ThisYear=CurYear(date)  !year 
@@ -416,13 +418,12 @@ C  CALCULATE ACTUAL RADIATION INCIDENT ON CROP AT SOLAR NOON
 C  GIVEN DAILY INTEGRAL AND ASSUMING RADIATION FLUX DENSITY
 C  VARIES AS A HALF SINE WAVE OVER THE PHOTOPERIOD
 C
-        WATACT = RI*4.363E-4/dayLng                                       !Watact:Actual radiation incident at earth's surface at noon, W m-2.
-C       4.363E-4 = 3.1416/3600/2                                          !RI: daialy solar radiation integral
+        WATACT = RI*4.363E-4/DAYLNG
+C       4.363E-4 = 3.1416/3600/2
 C
-       
 C  CALCULATE CLOUD COVER. ***
 C
-        WATRAT = WATACT/WATPOT                                            !WATRAT: Proportion of radiation that can penetrate the cloud cover
+        WATRAT = WATACT/WATPOT
         If (WATRAT.GE.1.0) then
           CLOUD = 0.0
         Else
@@ -430,13 +431,13 @@ C
      &   /(-0.76)
 C        1.52 = 4*0.38
 C        0.76 = 2*0.38
-          If (CLOUD.GE.1.0) CLOUD = 1.0                                   !Cloud cover
+          If (CLOUD.GE.1.0) CLOUD = 1.0
         Endif
 C
 C       DUSK AND DAWN
 C
-        DAWN = 12.0 - (dayLng/2.0)                                        !time of dawn and dusk in hours
-        DUSK = 12.0 + (dayLng/2.0)
+        DAWN = 12.0 - (DAYLNG/2.0)
+        DUSK = 12.0 + (DAYLNG/2.0)
 C
 C  CALCULATE TOTAL RADIATION INCIDENT ON THE CROP AT EACH TIME
 C
@@ -447,8 +448,8 @@ C
         Do 20, J = 1,IHPERD
           HRANG(J) = PI/12.0*(12 - J + 0.5)
  20     HRANG(IPERD - J + 1) = HRANG(J)
-        DDIf = dayLng - (2.0*IfIX(dayLng/2))
-        IUP = 13 - IfIX(dayLng/2)
+        DDIf = DAYLNG - (2.0*IfIX(DAYLNG/2))
+        IUP = 13 - IfIX(DAYLNG/2)
         IDN = 12 + (13 - IUP)
         If (.NOT.((DDIf.GT.0.0).OR.(DDIf.LT.0.0)))then
           IDAWN = IUP
@@ -456,12 +457,10 @@ C
         Else
           IDAWN = IUP - 1
           IDUSK = IDN + 1
-      ENDIf
+        ENDIf
 C
 C  CALCULATE TOTAL RADIATION INCIDENT ON THE CROP AT EACH TIME
 C
-    
-
         Do I = 1,IPERD
           TIMH = I - 0.5
           WATTSM(I) = 0.0                 ! Actual radiation incident on earth hourly [w/m2]
@@ -490,7 +489,12 @@ C
 C  READ NEXT DAY'S DATA FROM WEATHER FILE ***
 C
         il=il+1
-        Read (5,*,ERR=10) MDAY, date,(CLIMAT(i),i=1,NCD)
+        Read (5,*,ERR=10,iostat=IOSTAT) MDAY, date,(CLIMAT(i),i=1,NCD)
+        if (iostat<0) then
+          write(*,*) 'Premature end of weather file'
+          stop
+        endif
+
 c       Minimum tomorrow temperature
         MDAY=Julday(date)
         If (MDAY.LT.JDLAST) then
@@ -513,7 +517,7 @@ C
         D20 = 0.0945 - (WATACT*8.06E-5) + (TMAX*6.77E-4)
         D21 = TMAX/D20/WATACT
         If (D21.GE.1.0) D21 = 1.0
-        TMAXHR = dayLng/PI*(PI - (ASIN(D21)))
+        TMAXHR = DAYLNG/PI*(PI - (ASIN(D21)))
 C
 C  CALCULATE SOME PARTS OF THE TEMPERATURE EQUATIONS THAT OCCUR
 C  REPEATEDLY LATER
@@ -602,7 +606,7 @@ cdt added msw6 to if statement here
 
         If (MSW1.NE.1.and.MSW6.eq.0) then   !if no wet bulb temperature and no relative humidity
           AVP = 0.61*EXP((17.27*TMIN)/(TMIN + 237.3))  !calculate AVP using TMin
-          GAMMA = 0.0645
+          GAMMA_psy = 0.0645
 !       Calculation of saturated vapour pressure is wet bulb and relative humidity id not given as input
           SVPW1= 0.61*EXP((17.27*TMin)/(TMin + 237.3))
           SVPW2= 0.61*EXP((17.27*TMax)/(TMax + 237.3))
@@ -623,12 +627,13 @@ C  D32 AND THE PSYCHROMETRIC "CONSTANT"
 C
           D31 = 0.622*(SVPW/(101.3 - SVPW))
           D32 = 2500.8 - (2.37*TWET)
-          GAMMA = 0.62*(1.006 + (1.846*D31))
+          GAMMA_psy = 0.62*(1.006 + (1.846*D31))
      &   /((0.622 + D31)*(0.622 + D31)*D32)*101.3
 C
 C  CALCULATE ACTUAL WATER VAPOR PRESSURE
 C
-          AVP = SVPW - (GAMMA*(TDRY - TWET))
+          AVP = SVPW - (GAMMA_psy*(TDRY - TWET))
+        
           Rel_Humid=AVP/SVPW
 C _todo   Calculate Relative humidity here if it is not input
           Endif !if MSW!.eq.1
@@ -645,7 +650,7 @@ C Also calculate TMean
 
                 D31 = 0.622*(SVPW/(101.3 - SVPW))
                 D32 = 2500.8 - (2.37*TMean)
-                GAMMA = 0.62*(1.006 + (1.846*D31))
+                GAMMA_psy = 0.62*(1.006 + (1.846*D31))
      &          /((0.622 + D31)*(0.622 + D31)*D32)*101.3
                 AVP= Rel_Humid*SVPW
           endif   ! end MSW6.eq.1
@@ -666,14 +671,8 @@ C
 C  CALCULATE WATER VAPOR PRESSURE DEFICIT
 C
           VPD(I) = SVPA - AVP
-          
           If (VPD(I).LE.0.0) VPD(I) = 0.0
-             
-   
  80     Continue
-        
-      
-        
 c....................Light interception submodel
         If(NShoot.ne.0) then
 C
@@ -968,10 +967,10 @@ C gives you the .149
 C See eqn 5.11 of http://mepas.pnnl.gov/mepas/formulations/source_term/5_0/5_13/5_13.html
               D12 = max(1.0,2.0-(2.0*COVER))
               If (D12.GE.1.0) D12 = 1.0
-              ESO = ((DEL(ITIME)/GAMMA*RNS*3600.0/(2500.8
+              ESO = ((DEL(ITIME)/GAMMA_psy*RNS*3600.0/(2500.8
      &     - (2.3668*TAIR(ITIME))))
      &     + (VPD(ITIME)*109.375*(1.0 + (0.149*WIND*D12))))
-     &      /((DEL(ITIME)/GAMMA) + 1.0)
+     &      /((DEL(ITIME)/GAMMA_psy) + 1.0)
 
 c
 c  IF THE NODE IS EXPOSED THEN
@@ -989,8 +988,6 @@ c
             VarBW(kS(i),2)=0.05*24.*ESO/10000.
           Endif
 cccz -----------------------------------------------------------------------------------
-          
-          
           
 c                Endif for the surface nodes
  90     Continue
@@ -1040,10 +1037,10 @@ C
 C   CALCULATE POTENTIAL TRANSPIRATION RATE FOR CROP ALLOWING FOR
 C   INCOMPLETE GROUND COVER units are grams per m2 per hour
 C
-        EPO = ((DEL(ITIME)/GAMMA*RNC*3600.0/(2500.8
+        EPO = ((DEL(ITIME)/GAMMA_psy*RNC*3600.0/(2500.8
      &   - (2.3668*TAIR(ITIME))))
      &   + (VPD(ITIME)*109.375*(ROUGH +(0.149*WINDL))))
-     &   /((DEL(ITIME)/GAMMA) + 1.0)
+     &   /((DEL(ITIME)/GAMMA_psy) + 1.0)
 C
 C   CODE ADDED TO PREVENT DIVISION BY o
 C

@@ -1,1 +1,1 @@
-copy "D:\MaizsimWA\Soil Source\Debug\2dsoil.exe" d:\maizsim07\agmipET2
+copy "D:\Maizsim07\Soil Source\Debug\2dsoil.exe" d:\maizsimWA

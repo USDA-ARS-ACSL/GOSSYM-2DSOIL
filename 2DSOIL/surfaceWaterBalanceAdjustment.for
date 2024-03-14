@@ -1059,9 +1059,6 @@ cccz take average between the current iteration and previous iteration steps to 
         RunoffRight=RunoffRight_temp
        endif
 
-cccz Now we already solve the SV equation
-cccz assign the flux as water input at each node
-cccz for regular grid, the program can be ended here, after some arrangement
 
 cccz ask a question, why use "q_Flux_Node_Old" here?
        do n=1,SurNodeIndex

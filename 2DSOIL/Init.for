@@ -90,11 +90,10 @@ C45    Continue
          im=im+1
       read(9,'(A132)')sumryfle        !Files for cotton output.sum 
          im=im+1
-
 	close(9)
-        Path=extract_path(PlantGraphics)
-        logFile=trim(Path)//'2DSOIL03.LOG'
-        Open(4,file=logFile)
+      Path=extract_path(PlantGraphics)
+      logFile=trim(Path)//'2DSOIL03.LOG'
+      Open(4,file=logFile)
 c   end of temporary block
 c  These 4 variables are for the iterative solver Orthomin
       ECNVRG=1.0d-6
