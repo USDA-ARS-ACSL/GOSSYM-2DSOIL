@@ -2770,10 +2770,13 @@
                 if (Red_Fac_Strength_LWP.lt. 0.) Red_Fac_Strength_LWP=0
                 if (Red_Fac_Strength_LeafN.lt. 0.) Red_Fac_Strength_LeafN=0
 
+#                Red_Fac_Strength_LeafN=1.0
+#                Red_Fac_Strength_LWP=1.0
+                
                 FQS(K,L,M)=                                     &                   ! Fiber strength
                     (21.817 + 0.341* AVGT(K,L,M))*              &                   !  Potential value = f(temp)
                     Red_Fac_Strength_LWP*                      &
-                    Red_Fac_Strength_LeafN
+                    Red_Fac_Strength_LeafN*CALBRT(56)
 
                 Red_Fac_Length_LWP=    (1.35  + 0.220*AVGLWP(K,L,M))                !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
                 Red_Fac_Length_LeafN = (0.928 + 0.001*AVGLEAFN(K,L,M)*1000.0)       !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
@@ -2783,11 +2786,14 @@
                 if (Red_Fac_Length_LWP.lt. 0.) Red_Fac_Length_LWP=0
                 if (Red_Fac_Length_LeafN.lt. 0.) Red_Fac_Length_LeafN=0
 
+#                Red_Fac_Length_LeafN=1.0
+#                Red_Fac_Length_LWP=1.0
+                
                 FQL(K,L,M)=                                     &                   ! Fiber length
                     (11.49 + 1.75*AVGT(K,L,M)                   &
                     -0.04*AVGT(K,L,M)*AVGT(K,L,M))*             &
                     Red_Fac_Length_LWP*                         &
-                    Red_Fac_Length_LeafN
+                    Red_Fac_Length_LeafN*CALBRT(58)
 
                 Red_Fac_Micro_LWP=    (0.44-0.203*AVGLWP(K,L,M))                    !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
                 Red_Fac_Micro_LeafN =(1.157-0.007*AVGLEAFN(K,L,M)*1000.0)           !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
@@ -2797,24 +2803,32 @@
                 if (Red_Fac_Micro_LWP.lt. 0.) Red_Fac_Micro_LWP=0
                 if (Red_Fac_Micro_LeafN.lt. 0.) Red_Fac_Micro_LeafN=0
 
+#                Red_Fac_Micro_LeafN=1.0
+#                Red_Fac_Micro_LWP=1.0
+                
                 FQM(K,L,M)=                                     &                   ! Micronaire
                     (-6.88 + 0.843*AVGT(K,L,M)                  &
-                    -0.017* AVGT(K,L,M)*AVGT(K,L,M))*           &
+                    -0.017* AVGT(K,L,M)*AVGT(K,L,M))*1.2*       &
                     Red_Fac_Micro_LWP*                          &
-                    Red_Fac_Micro_LeafN
+                    Red_Fac_Micro_LeafN*CALBRT(59)
 
                 Red_Fac_Uni_LWP=   (1.16 +  0.098*AVGLWP(K,L,M))                    !  Reduction factor = f(AVGLWP(K,L,M)/10.0) [MPA]
                 Red_Fac_Uni_LeafN =(1.005-0.0002*AVGLEAFN(K,L,M)*1000.0)            !  Reduction factor = f(AVGLEAFN(K,L,M)*1000.0) [gN/kg leaf weight]
+
 
                 if (Red_Fac_Uni_LWP.gt. 1.) Red_Fac_Uni_LWP=1
                 if (Red_Fac_Uni_LeafN.gt. 1.) Red_Fac_Uni_LeafN=1
                 if (Red_Fac_Uni_LWP.lt. 0.) Red_Fac_Uni_LWP=0
                 if (Red_Fac_Uni_LeafN.lt. 0.) Red_Fac_Uni_LeafN=0
+                
+#                Red_Fac_Uni_LWP= 1.0
+#                Red_Fac_Uni_LeafN=1.0
+                
                 FQU(K,L,M)=                                     &                   ! Uniformity (%)
                     (55.04 + 2.368*AVGT(K,L,M)                  &
-                    -0.047 *AVGT(K,L,M)*AVGT(K,L,M))*           &
+                    -0.047 *AVGT(K,L,M)*AVGT(K,L,M))*0.98*      &
                     Red_Fac_Uni_LWP*                            &
-                    Red_Fac_Uni_LeafN
+                    Red_Fac_Uni_LeafN*CALBRT(60)
 
                 FQS_Plant=FQS_Plant+FQS(K,L,M)* OpenBollYield(K,L,M)                !Multiplying by the open boll weight, for doing the mass weighted avg
                 FQL_Plant=FQL_Plant+FQL(K,L,M)* OpenBollYield(K,L,M)

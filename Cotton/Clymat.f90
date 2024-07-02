@@ -13,7 +13,7 @@
            ELSE
         POLYNA = 1
     ENDIF
-!
+    
     ! *** LTYPE=1 OKRA LEAF.   LTYPE=0 NORMAL LEAF
     ! *** TEST OF CHANGE IN CANOPY LIGHT INTERCEPTION DUE TO PIX   06/29/90
 
@@ -26,27 +26,29 @@
     IF(INT.LT.0.) INT = 0.
     IF(INT.GE.0.95) INT = 0.95
     
-
+    CALL JULANTOCAL(MO,DAZE,IYEAR,DAYNUM)
     ! *** INT = FRACTION OF INCIDENT LIGHT INTERCEPTED BY PLANT CANOPY.
     ! *** BAKER ET. AL. CANOPY ARCHITECTURE IN RELATION TO YIELD.
     ! *** CHAPTER 3 IN 'CROP PHYSIOLOGY' ED. V. S. GUPTO.
 
     IF(LAI.GT.LMAX) LMAX = LAI
     IF(LAI.LT.LMAX.AND.LAI.LT.3.1) THEN
-        CLAI = 0.0
+        CCLAI = 0.0
         IF(Z.LT.ROWSP) THEN
-            CLAI = 3.1 * Z/ROWSP
-            IF(LAI.LE.CLAI) INT = INT * LAI / CLAI
+            CCLAI = 3.1 * Z/ROWSP
+            IF(LAI.LE.CCLAI) INT = INT * LAI / CCLAI
         ELSE
             INT=INT*LAI/3.1
         ENDIF
     ENDIF
-    
+
     IF(INT.LT.0.) INT = 0.
     IF(INT.GE.0.95) INT = 0.95
-
-    Cover= INT
-    height=Z
+  
+    Cover= 1.0 - exp (-0.79*(area*100*poparea/10000.0))  !Portion of soil covered by crop
+    shade=cover* ROWSP*Eomult  !Width of shaded strip of soil  surface
+    height=min(shade, rowsp)
     
+   
     RETURN
     END

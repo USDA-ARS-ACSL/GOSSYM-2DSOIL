@@ -24,13 +24,14 @@ c   will be transferred.
       Real(4) Tpot, EO,RootClass,rootCapGrowing
       Real(4) rootExp,tsr,rmassmc, rmassyc
       Real BlkDn, FracSind, FracClay, FracOM, hCritS,hCritA
-	  Real nodeArea,sowingday, endday
+	  Real nodeArea,sowingday, endday, gridWidth
       Integer CodeW,CodeS,CodeT,CodeG,errPlant, nshoot, Tinit
 	  Integer MaxItO, OutPutSoilNo, OutPutSoilYes
       Logical*1 lOrt
-      Integer DailyOutput, HourlyOutput,RunFlag,lInput,Iter, 
-     !  HourlyWeather,ITIME, IDAWN, IDUSK,DailyWeather,
-     !  beginDay,year,DayOfYear
+      Integer DailyOutput, HourlyOutput,RunFlag,  
+     !  DailyWeather,HourlyWeather,ITIME, IDAWN, IDUSK,
+     !  beginDay,year, ponding,
+     !  PondingByHead, PondingByFlux, lInput,Iter, DayOfYear
      
         character WeatherFile*256, TimeFile*256, BiologyFile*256,
      !          ClimateFile*256, NitrogenFile*256, SoluteFile*256,
@@ -65,7 +66,7 @@ c   will be transferred.
      !       RMassY(NumNPD), RDenY(NumNPD), 
      !       MatNumE(NumElD),gSink_OM(NumNPD,NumGD),
      !       gSink_root(NumNPD,NumGD),gSink_rootY(NumNPD,NumGD),
-     !       gSink_rootM(NumNPD,NumGD)
+     !       gSink_rootM(NumNPD,NumGD),gSink_N2O(NumNPD,NumGD)
       Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,
      !       NumSurfDat, NSeep, NSP(NSeepD), NP(NSeepD,NumSPD),
      !       NDrain,NDR(NDrainD),ND(NDrainD,NumDR),
@@ -74,7 +75,8 @@ c   will be transferred.
      !       PCodeW(NumNPD),Width(NumBPD),
      !       VarBW(NumBPD,3),
      !       VarBS(NumBPD,NumSD),VarBT(NumBPD,4),
-     !       VarBG(NumBPD,NumGD,3),EO,Tpot
+     !       VarBG(NumBPD,NumGD,3),EO,Tpot,gridWidth,
+     !       pondingByHead, pondingByFlux
       Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt, 
      !        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit,
      !        lInput,Iter,DailyOutput,HourlyOutput,RunFlag,
@@ -120,5 +122,5 @@ C Root class is the variables for root classification and root weight distributi
      !          rootCapGrowing(numnpd)
      !           
 	  
-      Common /ConversionFactors_parameters/ppm_to_ugGasCm3air(NumGD), 
+      Common /ConversionFactors_parameters/ugGasCm3air_to_ppm(NumGD), 
      !           GasTransfCoeff(NumGD)

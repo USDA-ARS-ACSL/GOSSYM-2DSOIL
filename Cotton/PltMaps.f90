@@ -31,11 +31,12 @@
 
     ! *** Update age of pre-fruiting node
 
-    DO J=1,NUMPFN    !number of pre fruting nodes
-        AGEPFN(J) = AGEPFN(J) + 1   ! AGEPFN: age of prefruting node
+    DO J=1,NUMPFN                                   !number of pre fruting nodes
+        AGEPFN(J) = AGEPFN(J) + 1                   ! AGEPFN: age of prefruting node
         AVTPFN(J) = (AVTPFN(J)*(AGEPFN(J)-1)+TAVG) / AGEPFN(J)
     ENDDO
     AVTEMP = ((KDAY-1)*AVTEMP + TAVG)/ KDAY
+   
 
     ! *** If first square has not occurred, calculate the time from emergence
     ! *** to first square, TSQ
@@ -46,7 +47,7 @@
 
         ! *** If first square has not occurred, decide whether to add a PFruit node
 
-        IF(KDAY.LT.IFIX(TSQ)) THEN  ! TSQ: Time of first square
+        IF(KDAY.LT.IFIX(TSQ)) THEN                                      ! TSQ: Time of first square
 
             IF(AGEPFN(NUMPFN).LE.66.) THEN
 
@@ -100,6 +101,7 @@
             IF(NNID.LT.mxfsite) THEN
                 DELAY(K,L) = DELAY(K,L) + ((CDLAYF+NDLAY) / PIXDN)
                 call Fruiting_Branch_Node_Time_Interval(k,l,nnid)
+                  
                 IF(AGE(K,L,NNID).GE.(fbnti+DELAY(K,L)))				&
 
                     ! *** Add A fruiting branch.
@@ -112,12 +114,16 @@
 
             DO 50 M=1,NNID   !Node number on fruting branch
                 AGE(K,L,M) = AGE(K,L,M) + 1.0
-
-                !		   Adj_temp = TAVG + Canopy_Temp_Differential(psild)
-                !            AVGT(K,L,M) = (AVGT(K,L,M)*(AGE(K,L,M)-1) + Adj_temp)/
-                !     .                     AGE(K,L,M)
-
                 AVGT(K,L,M) = (AVGT(K,L,M)*(AGE(K,L,M)-1)+TAVG)/AGE(K,L,M)
+! FQ Calculate running average leaf water potential    !AVGLWP(10,40,15)
+! FQ Calculate running average LeafN   !AVGLEAFN(10,40,15)
+! FQ Calculate running average K   !AVGK(10,40,15)
+! FQ Calculate running average P   !AVGP(10,40,15)		   
+               AVGLWP(K,L,M) = (AVGLWP(K,L,M)*(AGE(K,L,M)-1)+PSIL_G)/AGE(K,L,M)         !Leaf water potential
+		       AVGLEAFN(K,L,M) = (AVGLEAFN(K,L,M)*(AGE(K,L,M)-1)+leafcn)/AGE(K,L,M)     !LeafN
+		       AVGK(K,L,M) = (AVGK(K,L,M)*(AGE(K,L,M)-1)+SLEAFK)/AGE(K,L,M)             !AvgK
+		       AVGP(K,L,M) = (AVGP(K,L,M)*(AGE(K,L,M)-1)+SLEAFP)/AGE(K,L,M)             !AvgP                
+                
                 AVTNOD = AVGT(K,L,M)
                 AGENOD = AGE(K,L,M)
 
@@ -199,18 +205,21 @@
                             else
                                 YIELD = YIELD + (GINP * (BOLWGT(K,L,M)*0.75)	   &
                                     * POPPLT/226800.)
+                                OpenBollYield(K,L,M)=GINP * (BOLWGT(K,L,M)*0.75)*  &
+                                    POPPLT/226800*500                                   !Lb/acre
                             endif
 
                             ! *** Estimate fiber length and stength
 
-                            call Fiber_Length_and_Strength(avtnod)
+	          !     call Fiber_Length_and_Strength()        !FQ
+
                         ENDIF
                     ENDIF
                     SITEZ = SITEZ + 1
                 ENDIF
 50          CONTINUE
-40      enddo    !loop of number of fruting branch
-30  CONTINUE ! Loop of number of vergitativ ebranch
-
+40      enddo                               !loop of number of fruting branch
+30  CONTINUE                                ! Loop of number of vergitativ ebranch
+ 
     RETURN
     END

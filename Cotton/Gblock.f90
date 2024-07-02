@@ -22,7 +22,7 @@
     AIRDRW=0.
     ALPHA=3.5
     APRES=0.0
-    AREA=0.
+    AREA=0
     AT=.2
     AVAILN=0.
     AVGTSD=0.
@@ -36,11 +36,12 @@
     BETAI=0.
     BETAW=0.
     BOLL1=0.
+    BOLABZT=0.
     BURCN=0.
     BURMIN=0.
     BURR1=0.
     BURRN=0.
-
+    !cclai=0
     CD=0.0
     CDBOLL=0.
     CDLEAF=0.
@@ -58,8 +59,6 @@
 
     COTXX=0.
 
-    !     CO2 = 0
-
     CPOOL=0.
     CSTRES=1.
     CSTORE=1.0
@@ -75,7 +74,7 @@
     DEFBGN=0
     DEFDAY=0
     DEFKGH=0.
-    DAYLNG=13.
+    !DAYLNG=13.
     DAYNUM=1
     DAYWTF=0.
     DAZE=0.0
@@ -103,7 +102,7 @@
     FCINIW=.2
     FERN=0.
     FILFRM='formatted'
-    IF((OPSYS.EQ.'dos').OR.(OPSYS.EQ.'DOS')) FILFRM='binary'
+    !IF((OPSYS.EQ.'dos').OR.(OPSYS.EQ.'DOS')) FILFRM='binary'
     FL = 0.
     FLOSS=0.0
     FLNMIN=1.0E-6
@@ -123,7 +122,7 @@
     GAMMA=0.653
     GBLOS=0.
     GBOLWT=0.
-    GBZ2=0.
+    GBZ2=0. 
     GIN=0.
     GINP=0.0
     GSUBR=.375
@@ -134,7 +133,7 @@
 
     h2oaddl = 0.
     h2oaddr = 0.
-    height=0.
+    height=3.
     
     IDAY=0
     IFGIRR=0
@@ -151,7 +150,6 @@
 
     iobday=0
     imtday=0
-    !	  ipdays=0
     irrflag=0
 
     KRAIN=0
@@ -168,7 +166,7 @@
     LAI=0.001
     LAMDAC=0.23
     LAMDAS=0.10
-    LATUDE=35
+   ! LATUDE=35
     LDAYAW=0
     LDAYIR=0
     LDAYFW=0
@@ -184,7 +182,7 @@
     LMAX=0
     LR=5
     LTYPE=0
-    LVSLOS=0
+    LVSLOS=0.
     LYTRES=0.
 
     MH2O=0
@@ -225,6 +223,7 @@
     NAVG=0
     n06=0
     Nsow=0
+    NS_1=0
     ORGN=0.
 
     PDBOLL = 0.
@@ -252,6 +251,7 @@
     POLYNA = 0
     POPFAC = 0.
     POPPLT = 41000.
+    PPLANT=0.0
     PQFLR = 0.
     PRPDAY = 0
     PRPKGH = 0.
@@ -270,12 +270,12 @@
     punits=0.0
 
     RAIN = 0.
-    RCH2O = .0002 !ROOT CARBOHYDRATE SUPPLY PER PLANT, IN GM/PLANT
-   ! RCH2O = 0.0!ROOT CARBOHYDRATE SUPPLY PER PLANT, IN GM/PLANT
+    RCH2O = 0.2 !ROOT CARBOHYDRATE SUPPLY PER PLANT, IN GM/PLANT
+   !! RCH2O = 0.0!ROOT CARBOHYDRATE SUPPLY PER PLANT, IN GM/PLANT
     REQ1 = 0.
     RESC = .06
     RESN = 0.
-    RI = 0.
+    !RI = 0.
     RN = 0.
     ROOTCN = .037  !AVERAGE NITROGEN CONCENTRATION IN ROOTS
     ROOTN = .00450 !Total root nitrogen
@@ -308,6 +308,9 @@
     SKPFLG =  .FALSE.
     SLEAF = 0.
     SLEAFN = .0074
+    SLEAFP=  .0074            !Leaf phosphorous FQ
+    SLEAFK=  .0074            !Leaf pottassium  FQ
+
     SLF = .02
     SPDWBO = 0.
     SPDWLD = 0.
@@ -318,11 +321,13 @@
     SQUAR = 0.
     SQRZ = 0.
     SQWT = 0.
+    SQABZT=0.
     SROOT = 0.
     SSTEM = 0.
     STEMCN = .037
     STEMN  = .0074
     STEMRS = 0.
+    stress_index=0.0
     SUMEP = 0.0
     SUMES = 0.0
     SUMSTRS = 0.0
@@ -351,14 +356,14 @@
     ave_fob_tavg = 0.0
 
     T = 0.
-    TAVG = 0.
+   ! TAVG = 0.
     TCELL = 1.
     TD = 0.
     TEMP1C = 0.
     TEMP1G = 0.
     TEMP1R = 0.
     TH2O = 0.
-    TDAY = 0.
+    !TDAY = 0.
     TDFKGH = 0.
     THETAI = 0.
     THRLN = 0.3E-3
@@ -377,7 +382,7 @@
     TNNO3 = 0.
     TNH4UP = 0.
     TNO3UP = 0.
-    TNYT = 0.
+    !TNYT = 0.
 
     UPNH4 = 0.
     UPNO3 = 0.
@@ -389,13 +394,14 @@
 
     WCELL = 5.
     WATTBL = 200.
-    WATTSM = 0.
-    WIND = 88.
+    !WATTSM = 0.
+    !WIND = 88.
     WSTRSD = 1.
     WSTRSN = 1.
     WTSLFD = 0.
     WSTRS = 1.
-
+    WS_1=0
+    
     XTRAC = 0.
     XTRAN = 0.
 
@@ -448,8 +454,21 @@
                 AGEABZ(I,J,K)=0.0
                 AGEBOL(I,J,K)=0.0
                 AVGT(I,J,K)=0.
+                
+                AVGLWP(I,J,K)=0.         !FQ  Running average LWP
+                AVGLEAFN(I,J,K)=0.       !FQ  Running average leafN
+                AVGK(I,J,K)=0.           !FQ  Running average LeafK
+                AVGP(I,J,K)=0.           !FQ  Running average leafP
+               
+                FQS(I,J,K)=0.           !FQ  strength    To sum all the quality
+                FQL(I,J,K)=0.           !FQ  length
+                FQM(I,J,K)=0.           !FQ  Micronaire
+                FQU(I,J,K)=0.           !FQ  uniformity
+               
                 BOLTMP(I,J,K)=0.
                 BOLWGT(I,J,K)=0.
+                OpenBollYield(I,J,K) =0   !FQ for calculating the weight in the Fiber quality calculation
+                
                 BSIZE(I,J,K)=0.0
                 DEHISS(I,J,K)=45.
                 FCODE(I,J,K)=0.
@@ -669,7 +688,7 @@
         DO 165 J=1,6
             NODPMAP(I,J)=0
 165     CONTINUE
-        TAIR(I) = 0.
+ !       TAIR(I) = 0.
 170 CONTINUE
 
     ! *******************************(20)*********************************

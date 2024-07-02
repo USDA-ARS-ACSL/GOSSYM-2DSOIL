@@ -2,166 +2,195 @@
 <VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application - Converted from CVF" Version="11.0" ProjectIdGuid="{05500875-9B63-45CA-B7D6-FD6A5240ED1A}">
 	<Platforms>
 		<Platform Name="Win32"/>
-		<Platform Name="x64"/></Platforms>
+		<Platform Name="x64"/>
+	</Platforms>
 	<Configurations>
-		<Configuration Name="Debug|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" PreprocessorDefinitions="_DEBUG" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;$(SolutionDir)CottonPn\Debug\GOSSYM.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="echo $(targetpath)"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Dennis_Dbg|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" LocalSavedScalarsZero="true" InitArrays="true" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/2dsoil.exe" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/2dsoil.pdb" SubSystem="subSystemConsole" AdditionalDependencies="&quot;D:\MAIZSIMWA\crop source\Debug\crop.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="_DEBUG" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\AgMIPET2&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Kansas&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Crown&quot;"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="SBtest|Win32">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Debug|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Gossym_2DSoil\CottonPn\Debug\Cotton.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Dennis_Dbg|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" LocalSavedScalarsZero="true" InitArrays="true" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/2dsoil.exe" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/2dsoil.pdb" SubSystem="subSystemConsole" AdditionalDependencies="&quot;D:\MAIZSIMWA\crop source\Debug\crop.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="_DEBUG" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool" CommandLine="echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\AgMIPET2&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Kansas&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Crown&quot;"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="SBtest|x64">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
-				<Tool Name="VFResourceCompilerTool"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" BufferedIO="true" Preprocess="preprocessYes" FloatingPointModel="precise" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" ProgramDatabaseFile="$(OUTDIR)/2dsoil.pdb" SubSystem="subSystemConsole" AdditionalDependencies="&quot;$(SolutionDir)CottonPn\Release\GOSSYM.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="NDEBUG" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true" VerboseOutput="true"/></Configuration>
-		<Configuration Name="Release|x64" OutputDirectory="$(ConfigurationName)" IntermediateDirectory="$(ConfigurationName)" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;$(SolutionDir)CottonPn\Release\GOSSYM.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Test|Win32" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Gossym_2DSoil\CottonPn\Debug\GOSSYM.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Test|x64" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
-				<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Gossym_2DSoil\CottonPn\Debug\Cotton.lib&quot;"/>
-				<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
-				<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
-				<Tool Name="VFCustomBuildTool"/>
-				<Tool Name="VFPreLinkEventTool"/>
-				<Tool Name="VFPreBuildEventTool"/>
-				<Tool Name="VFPostBuildEventTool"/>
-				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+		<Configuration Name="Debug|Win32" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" PreprocessorDefinitions="_DEBUG" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;$(SolutionDir)CottonPn\Debug\GOSSYM.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="echo $(targetpath)"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Dennis_Dbg|Win32" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" LocalSavedScalarsZero="true" InitArrays="true" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/2dsoil.exe" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/2dsoil.pdb" SubSystem="subSystemConsole" AdditionalDependencies="&quot;D:\MAIZSIMWA\crop source\Debug\crop.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="_DEBUG" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\AgMIPET2&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Kansas&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Crown&quot;"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="SBtest|Win32" UseCompiler="ifortCompiler">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Debug|x64" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Gossym_2DSoil\CottonPn\Debug\Cotton.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Dennis_Dbg|x64" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" LocalSavedScalarsZero="true" InitArrays="true" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/2dsoil.exe" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" ProgramDatabaseFile="$(OUTDIR)/2dsoil.pdb" SubSystem="subSystemConsole" AdditionalDependencies="&quot;D:\MAIZSIMWA\crop source\Debug\crop.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="_DEBUG" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool" CommandLine="echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\AgMIPET2&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Kansas&quot;&#xA;echo f | xcopy /y &quot;$(TargetPath)&quot; &quot;D:\MAIZSIM07\Crown&quot;"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="SBtest|x64" UseCompiler="ifortCompiler">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFLinkerTool" SuppressStartupBanner="true"/>
+			<Tool Name="VFResourceCompilerTool"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Release|Win32" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" BufferedIO="true" Preprocess="preprocessYes" FloatingPointModel="precise" CallingConvention="callConventionCVF" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" RuntimeLibrary="rtMultiThreadedDebug" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" ProgramDatabaseFile="$(OUTDIR)/2dsoil.pdb" SubSystem="subSystemConsole" AdditionalDependencies="&quot;$(SolutionDir)CottonPn\Release\GOSSYM.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" PreprocessorDefinitions="NDEBUG" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true" VerboseOutput="true"/>
+		</Configuration>
+		<Configuration Name="Release|x64" UseCompiler="ifortCompiler" OutputDirectory="$(ConfigurationName)" IntermediateDirectory="$(ConfigurationName)" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalYes" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;$(SolutionDir)CottonPn\Release\GOSSYM.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Test|Win32" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Gossym_2DSoil\CottonPn\Debug\GOSSYM.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+		<Configuration Name="Test|x64" UseCompiler="ifortCompiler" DeleteExtensionsOnClean="*.obj;*.mod;*.pdb;*.asm;*.map;*.dyn;*.dpi;*.tmp;*.log;*.ilk;*.exe;$(TargetPath)">
+			<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" WarnTruncateSource="true" ModulePath="$(INTDIR)/" ObjectFile="$(INTDIR)/" AssemblerListingLocation="$(INTDIR)/" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebugDLL" WarnArgMismatch="true"/>
+			<Tool Name="VFLinkerTool" AdditionalOptions="/MACHINE:I386 " OutputFile="$(OUTDIR)/$(TargetName)$(TargetExt)" Version="1.14" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateDebugInformation="true" SubSystem="subSystemConsole" AdditionalDependencies="&quot;C:\Gossym_2DSoil\CottonPn\Debug\Cotton.lib&quot;"/>
+			<Tool Name="VFResourceCompilerTool" Culture="rcEnglishUS" ResourceOutputFileName="$(INTDIR)/$(InputName).res"/>
+			<Tool Name="VFMidlTool" SuppressStartupBanner="true" TargetEnvironment="midlTargetAMD64" TypeLibraryName="$(OUTDIR)/2dsoil.tlb"/>
+			<Tool Name="VFCustomBuildTool"/>
+			<Tool Name="VFPreLinkEventTool"/>
+			<Tool Name="VFPreBuildEventTool"/>
+			<Tool Name="VFPostBuildEventTool"/>
+			<Tool Name="VFManifestTool" SuppressStartupBanner="true"/>
+		</Configuration>
+	</Configurations>
 	<Files>
 		<Filter Name="Header Files" Filter="*.ins;h;hpp;hxx;hm;inl;fi;fd">
-		<File RelativePath="NITVAR.INS"/>
-		<File RelativePath="public.ins"/>
-		<File RelativePath="PUPLANT.INS"/>
-		<File RelativePath=".\PuSurface.ins"/>
-		<File RelativePath=".\PUWEATH.INS"/></Filter>
+			<File RelativePath="NITVAR.INS"/>
+			<File RelativePath="public.ins"/>
+			<File RelativePath="PUPLANT.INS"/>
+			<File RelativePath=".\PuSurface.ins"/>
+			<File RelativePath=".\PUWEATH.INS"/>
+		</Filter>
 		<Filter Name="Resource Files" Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
-		<File RelativePath=".\maizsim.rc"/></Filter>
+			<File RelativePath=".\maizsim.rc"/>
+		</Filter>
 		<Filter Name="Source Files" Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat;f90;for;f;fpp">
-		<File RelativePath=".\2DGOSSYM.FOR"/>
-		<File RelativePath=".\AutoIrrigate.for">
-			<FileConfiguration Name="Dennis_Dbg|x64">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Debug|Win32">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Test|x64">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Test|Win32">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Release|x64">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Debug|x64">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Release|Win32">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration>
-			<FileConfiguration Name="Dennis_Dbg|Win32">
-				<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/></FileConfiguration></File>
-		<File RelativePath=".\carbon_partitioning.FOR"/>
-		<File RelativePath="dateFunctions.for"/>
-		<File RelativePath=".\Drip.FOR"/>
-		<File RelativePath="ERRMES.FOR"/>
-		<File RelativePath="Ex14-5.for"/>
-		<File RelativePath=".\GASMOV.for"/>
-		<File RelativePath="GRID_BND.FOR"/>
-		<File RelativePath="HEATMOV.FOR"/>
-		<File RelativePath="hourwea.for"/>
-		<File RelativePath="Init.for"/>
-		<File RelativePath=".\Irrigation.for"/>
-		<File RelativePath="MASSBLW.FOR"/>
-		<File RelativePath="MNGMB.FOR"/>
-		<File RelativePath=".\Mulch_Decomp.for"/>
-		<File RelativePath="N_Massbl.for"/>
-		<File RelativePath="ORTHOFEM.FOR"/>
-		<File RelativePath="OUTPUT.FOR"/>
-		<File RelativePath=".\root_diff_new.for"/>
-		<File RelativePath=".\root_grow_c.FOR"/>
-		<File RelativePath="SETMAT01.FOR"/>
-		<File RelativePath=".\SetMatMulch.for"/>
-		<File RelativePath="SETSUR02.FOR"/>
-		<File RelativePath="SETTDB.FOR"/>
-		<File RelativePath="soilnden.for"/>
-		<File RelativePath=".\solmov.for"/>
-		<File RelativePath=".\solupt_Y1.for"/>
-		<File RelativePath=".\SurfaceMulchProcess.for"/>
-		<File RelativePath=".\surfaceWaterBalanceAdjustment.for"/>
-		<File RelativePath="SYNCHRON.FOR"/>
-		<File RelativePath=".\Tillage.for"/>
-		<File RelativePath=".\wateruptake.FOR"/>
-		<File RelativePath=".\Watmov.for"/></Filter></Files>
-	<Globals/></VisualStudioProject>
+			<File RelativePath=".\2DGOSSYM.FOR"/>
+			<File RelativePath=".\AutoIrrigate.for">
+				<FileConfiguration Name="Dennis_Dbg|x64">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Debug|Win32">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Test|x64">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Test|Win32">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Release|x64">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Debug|x64">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Release|Win32">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+				<FileConfiguration Name="Dennis_Dbg|Win32">
+					<Tool Name="VFFortranCompilerTool" AssemblerOutput="asmListingNone"/>
+				</FileConfiguration>
+			</File>
+			<File RelativePath=".\carbon_partitioning.FOR"/>
+			<File RelativePath="dateFunctions.for"/>
+			<File RelativePath=".\Drip.FOR"/>
+			<File RelativePath="ERRMES.FOR"/>
+			<File RelativePath="Ex14-5.for"/>
+			<File RelativePath=".\GASMOV.for"/>
+			<File RelativePath="GRID_BND.FOR"/>
+			<File RelativePath="HEATMOV.FOR"/>
+			<File RelativePath="hourwea.for"/>
+			<File RelativePath="Init.for"/>
+			<File RelativePath=".\Irrigation.for"/>
+			<File RelativePath="MASSBLW.FOR"/>
+			<File RelativePath="MNGMB.FOR"/>
+			<File RelativePath=".\Mulch_Decomp.for"/>
+			<File RelativePath="N_Massbl.for"/>
+			<File RelativePath="ORTHOFEM.FOR"/>
+			<File RelativePath="OUTPUT.FOR"/>
+			<File RelativePath=".\PondingByFlux.for">
+			</File>
+			<File RelativePath=".\PondingByHead.for"/>
+			<File RelativePath=".\root_diff_new.for"/>
+			<File RelativePath=".\root_grow_c.FOR"/>
+			<File RelativePath="SETMAT01.FOR"/>
+			<File RelativePath=".\SetMatMulch.for"/>
+			<File RelativePath="SETSUR02.FOR"/>
+			<File RelativePath="SETTDB.FOR"/>
+			<File RelativePath="soilnden.for"/>
+			<File RelativePath=".\solmov.for"/>
+			<File RelativePath=".\solupt_Y1.for"/>
+			<File RelativePath=".\SurfaceMulchProcess.for"/>
+			<File RelativePath=".\surfaceWaterBalanceAdjustment.for"/>
+			<File RelativePath="SYNCHRON.FOR"/>
+			<File RelativePath=".\Tillage.for"/>
+			<File RelativePath=".\wateruptake.FOR"/>
+			<File RelativePath=".\Watmov.for"/>
+		</Filter>
+	</Files>
+	<Globals/>
+</VisualStudioProject>

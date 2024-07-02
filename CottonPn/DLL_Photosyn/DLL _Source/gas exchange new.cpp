@@ -94,7 +94,7 @@ void CGas_exchange_new::getParms()
 	//Parameters.g0 = 0.096;
 	//Parameters.g1 = 16.57; //10.055 from Kim et al., was original value; 16.57 from Liu et al., 2009 - " with potato, unitless
 	//Parameters.g1 = 10.8;// for sb
-	Parameters.g1 = 15;// for sb
+	Parameters.g1 = 10;// for sb
     // Parameters.g1 = 7.3; 
 	//Parameters.g1 = 7.2; 
 	//Parameters.g1 = 5.5; //Parkhurst and Mott (1990)

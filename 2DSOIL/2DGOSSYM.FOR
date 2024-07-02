@@ -37,6 +37,8 @@ C SetSurfaceH --  reading hourly weather
       Call AutoIrrigate()
       Call Management()
       Call Irrigation()
+      Call PondedIrrigationByHead()
+      Call PondedIrrigationByFlux()
 	Call TillageProcess
 c	Call Drip()
       Starter=1.0D0

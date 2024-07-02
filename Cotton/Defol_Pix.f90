@@ -11,18 +11,16 @@
     ! IF TODAY IS DATE OF PREP APPLICATION THEN WE MUST CALCULATE % INTERCEPTED
 
     DO I=1,5
-         IF(DAYNUM.EQ.PRPDATE(I)) THEN
-        ! IF(JDAY.EQ.PRPDATE(I)) THEN   
-            IF(PRPMTH(I).EQ.0) THEN
+         IF(DAYNUM.EQ.PRPDATE(I)) THEN                                  !PRP date
+            IF(PRPMTH(I).EQ.0) THEN                                     !Banded
                 PRPKGH=PRPKGH+PRPPPA(I)*.95*1.12085*.75
             ELSE
-                PRPKGH=PRPKGH+PRPPPA(I)*INT*1.12085*.75
+                PRPKGH=PRPKGH+PRPPPA(I)*INT*1.12085*.75                 !if sprinkeler or broadcast
             ENDIF
             TDFKGH=DEFKGH+PRPKGH
         ENDIF
 
-        IF(DAYNUM.EQ.DEFDATE(I)) THEN
-           !  IF(JDAY.EQ.DEFDATE(I)) THEN
+        IF(DAYNUM.EQ.DEFDATE(I)) THEN                                   !DEF Date
             IF(DEFMTH(I).EQ.0) THEN
                 DEFKGH=DEFKGH+DEFPPA(I)*.95*1.12085*.75
             ELSE
@@ -32,7 +30,6 @@
         ENDIF
     ENDDO
      IF((DEFBGN.GT.0).AND.(DAYNUM.EQ.DEFBGN)) THEN
-      !   IF((DEFBGN.GT.0).AND.(JDAY.EQ.DEFBGN)) THEN
         LFATDF = 0
         DO 70 I=1,LEFCNT
             IDUM = LEFSRT(I)
@@ -51,8 +48,7 @@
 
     IF((PRPDAY.GT.0).AND.(DAYNUM.GT.PRPDAY))	 &
         AVGTSP=(AVGTSP*(DAYNUM-(PRPDAY+1))+TAVG)/(DAYNUM-PRPDAY)
-    !IF((PRPDAY.GT.0).AND.(JDAY.GT.PRPDAY))	 &
-    !    AVGTSP=(AVGTSP*(JDAY-(PRPDAY+1))+TAVG)/(JDAY-PRPDAY)
+
     ! *** The constant 4. in the following logic is from DNB,VRR,FDW
     ! *** field obs. at MITCHENERS 1989
     !
@@ -71,21 +67,6 @@
         IF(PERDEF.GT.100.) PERDEF = 100.
     ENDIF
 
-    
-    !   IF((DEFBGN.GT.0).AND.(JDAY.GT.DEFBGN)) THEN
-    !    AVGTSD=(AVGTSD*(JDAY-(DEFBGN+1))+TAVG)/(JDAY-DEFBGN)
-    !    DUM = PSIL_*10.
-    !    PERDEF = -35.2076+.5255*AVGTSD+7.0586*TDFKGH+				 &
-    !        1.7510*(JDAY-DEFBGN)-2.476*DUM-.03744*DUM**2+	 &
-    !        .0004198*AVGTSD*TDFKGH*(JDAY-DEFBGN)*DUM
-    !    IF((DEFDAY.GT.0).AND.(JDAY.GT.DEFDAY)) THEN
-    !        PERDEF = PERDEF*4.
-    !    ELSE
-    !        PERDEF = PERDEF*1.5
-    !    ENDIF
-    !    IF(PERDEF.LT.0.) PERDEF = 0.
-    !    IF(PERDEF.GT.100.) PERDEF = 100.
-    !ENDIF
     RETURN
     END
 
@@ -109,14 +90,13 @@
     ! AND CONVERT INTO SI UNITS (G). TAKE THE AMOUNT PIX APPLIED AND ADD TO THE
     ! EXISTING CONCENTRATION OF PIX IN THE PLANT.
 
-    PIXLOS=DEAD2DAY*PIXCON
-    PIXPLT=PIXPLT-PIXLOS
-    !IF(DAYNUM.EQ.PIXDAY(IPIX)) THEN
-         IF(JDAY.EQ.PIXDAY(IPIX)) THEN
-        IF(PIXMTH(IPIX).EQ.0) THEN
-            PIXPLT = PIXPLT + (19068.0 * PIXPPA(IPIX)*.90) / POPPLT
-        ELSE
-            PIXPLT = PIXPLT + (19068.0 * PIXPPA(IPIX)*INT) / POPPLT
+    PIXLOS=DEAD2DAY*PIXCON                  ! gC lossed due to abscission 
+    PIXPLT=PIXPLT-PIXLOS                    !Pix remaining today
+    IF(Daynum.EQ.PIXDAY(IPIX)) THEN
+        IF(PIXMTH(IPIX).EQ.0) THEN                                      !if banded
+            PIXPLT = PIXPLT + (19068.0 * PIXPPA(IPIX)*.90) / POPPLT     !pixppa is in lb/acre     
+        ELSE                                                            !if sprinkler or broadcast
+            PIXPLT = PIXPLT + (19068.0 * PIXPPA(IPIX)*INT) / POPPLT     !Int : FRACTION OF SOLAR RADIATION INTERCEPTED
         ENDIF
         IPIX = IPIX + 1
     ENDIF
@@ -129,7 +109,7 @@
     ! *** PIX IS SYSTEMIC IN NATURE AND EASILY MOVABLE WITH IN THE PLANT.
 
     if(plantw.gt.0.0) then
-        pixcon = pixplt / plantw
+        pixcon = pixplt / plantw                                    !pix concentration
     else
         pixcon = 0.0
     endif
@@ -139,10 +119,10 @@
 
     conc = pixcon
     if(conc.gt.0.035 ) conc = 0.035
-    pixdz = 1.0 - 18.619 * conc
-    pixda = 1.0 - 7.774 * conc
+    pixdz = 1.0 - 18.619 * conc                         !Stress for plant height
+    pixda = 1.0 - 7.774 * conc                          !Stress for leaf area
     if(conc.gt.0.02 ) conc = 0.02
-    pixdpn = 1.0 - 25.167*conc + 590.286*conc*conc
+    pixdpn = 1.0 - 25.167*conc + 590.286*conc*conc      !Stress for nodes
 
     IF(PIXDZ.GE.1.0)PIXDZ=1.0
     IF(PIXDZ.LE.0.45)PIXDZ=0.45

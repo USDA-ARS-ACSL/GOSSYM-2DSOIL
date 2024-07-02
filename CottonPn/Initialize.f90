@@ -8,7 +8,7 @@
     CALL PROFILES               !Passing basic crop features and read variety parameters
     CALL PGRHRBCDE              !Plant growh regulators
     CALL INITIAL                !Calcuate POPFAC, PNETCOR
-    CALL SUMMARYOUTPUT
+#    CALL SUMMARYOUTPUT
     RETURN
     END
     

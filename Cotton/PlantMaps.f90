@@ -128,3 +128,11 @@
     RETURN
     END
 
+    SUBROUTINE MEMPLANT
+
+    use common_block
+
+    PMAFIL='IAMDONE'
+    ABEND=.TRUE.
+    RETURN
+    END

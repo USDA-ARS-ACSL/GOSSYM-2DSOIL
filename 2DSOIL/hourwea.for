@@ -81,7 +81,7 @@ c inputs hourly data
       Include 'public.ins'
       Include 'puplant.ins'
       Include 'puweath.ins'
-      Include 'puSurface.ins'
+      Include 'PuSurface.ins'
       
       Parameter (PERIOD =1./24.)
       integer m,CurYear,Modnum, ThisYear,
@@ -93,15 +93,15 @@ c inputs hourly data
       integer HOUR
       Common /weatherh/ il,im,HRAIN(24),HSR(24),HTEMP(24),HTEMPY(24), 
      &     HWIND(24), Rel_Humid(24),isol,Date1,ModNum,
-     &     Interval, TWET(24),TDRY(14), AVP(24), Gamma(24),
-     &     SVPW(24),TMIN, TMAX,BEERS(24),TMAXDAY, TMINDAY
+     &     Interval, TWET(24),TDRY(24), AVP(24), GAMMA_psy(24),
+     &     SVPW(24),TMIN, TMAX,BEERS(24)
       
       Dimension CLIMAT(20),SDERP(9),SINALT(24),SINAZI(24),HRANG(24),
      &           SARANG(24),
      &           SOLALT(24),SOLAZI(24),
      &           HTM(24)
       Dimension xS(NumBPD),iS(NumBPD),kS(NumBPD)
-      double precision GAMMA_psy(24)
+
       Data SDERP/0.3964E-0,0.3631E1,0.3838E-1,0.7659E-1,0.0000E0,
      & -0.2297E2,-0.3885E0,-0.1587E-0,-0.1021E-1/,PI /3.1415926/,
      &  TPI /6.2831852/,DEGRAD/0.017453293/,IPERD/24/
@@ -126,6 +126,14 @@ cccz initialized surface water income
          Varbw_Mulch(i,2)=0.0D0
          Varbw_Mulch(i,3)=0.0D0 
       enddo
+            
+
+csb: Gas transfer coefficient: surface gas flux change per unit gas content in the soil air at the soil surface (cm/day)
+Csb: This value will be different for different gases
+      GasTransfCoeff(1)=11920.
+      GasTransfCoeff(2)=15400.      
+      GasTransfCoeff(3)=12355.
+      
 C
 C  First and last days
 C
@@ -263,7 +271,7 @@ C
 C
 C FIND CORRECT DAY IN WEATHER FILE
 C
-      Open (5,file=WeatherFile,status='old',ERR=10)
+      Open (5,file=WeatherFile,status='old',ERR=9)
       im=im+1
       il=il+1
       Read (5,*,ERR=10)
@@ -271,7 +279,12 @@ C
       il=il+1
       Read (5,*,ERR=10)
 1111  il=il+1
-      Read (5,*,ERR=10) iDum, date, iDum
+      Read (5,*,ERR=10,iostat=IOSTAT) iDum, date, idum
+      if (iostat<0) then
+        write(*,*) 'Premature end of weather file'
+        stop
+      end if
+
       MDAY=julday(date)
 cdt changed from LE to LT since jday was always gt. time
       If (MDAY.LT.JDFRST) GO TO 1111
@@ -309,7 +322,12 @@ c
         Do m=1,24
           il=il+1
 C          Read(5,*,ERR=10) JDAY,HOUR, DATE1, (CLIMAT(i),i=1,NCD)
-          Read(5,*,ERR=10) JDAY, date, HOUR,  (CLIMAT(i),i=1,NCD)
+          Read(5,*,ERR=10,iostat=IOSTAT) JDAY, date, HOUR,  
+     &      (CLIMAT(i),i=1,NCD)
+            if (iostat<0) then
+              write(*,*) 'Premature end of weather file'
+              stop
+            endif
            JDAY=julday(date)
 c    SInce some routines need the day of the calendar year we need a variable to hold this
 C    since the julian day is referenced to a time longer in the past
@@ -347,6 +365,8 @@ c model cannot handle freezing temperatures yet
            GAIR(2)=209000    !this is the atmospheric O2 concentration in ppm  
 csb O2 content of air=20.95% by volume, ie; 100 parts of air=20.95 parts of O2
 csb 1 part of air=0.2095 parts of O2. in 10^6 parts of air=0.2095*10^6=209000 ppm
+           GAIR(3)=0.332    !this is the atmospheric N2O concentration in ppm  [IPCC 2021,Technical summary]
+csb N2O concentration in atm 332 ppb=0.33 ppm 
 C
 C      ADJUST UNITS FOR HOURLY DATA
 c      HSR(M) is converted to an hours worth of Watts m-2 (Joules m-2 h-1) 
@@ -461,8 +481,8 @@ C        0.76 = 2*0.38
 C
 C       DUSK AND DAWN
 C
-        DAWN = 12.0 - (dayLng/2.0)
-        DUSK = 12.0 + (dayLng/2.0)
+        DAWN = 12.0 - (DAYLNG/2.0)
+        DUSK = 12.0 + (DAYLNG/2.0)
 C
 C  CALCULATE TOTAL RADIATION INCIDENT ON THE CROP AT EACH TIME
 C
@@ -473,8 +493,8 @@ C
         Do 20, J = 1,IHPERD
           HRANG(J) = PI/12.0*(12 - J + 0.5)
  20     HRANG(IPERD - J + 1) = HRANG(J)
-        DDIf = dayLng - (2.0*IfIX(dayLng/2))
-        IUP = 13 - IfIX(dayLng/2)
+        DDIf = DAYLNG - (2.0*IfIX(DAYLNG/2))
+        IUP = 13 - IfIX(DAYLNG/2)
         IDN = 12 + (13 - IUP)
         If (.NOT.((DDIf.GT.0.0).OR.(DDIf.LT.0.0)))then
           IDAWN = IUP
@@ -482,7 +502,7 @@ C
         Else
           IDAWN = IUP - 1
           IDUSK = IDN + 1
-      ENDIf
+        ENDIf
 C
 C  CALCULATE TOTAL RADIATION INCIDENT ON THE CROP AT EACH TIME
 C
@@ -492,8 +512,7 @@ C
           If(I.GE.IUP.AND.I.LE.IDN)
 cd   HSR is watts
      &      WATTSM(I) = HSR(I)
-      Enddo
-      
+        Enddo
         If ((DDIf.GT.0.0).OR.(DDIf.LT.0.0)) then
            WATTSM(IDAWN) = HSR(IDAWN)
            WATTSM(IDUSK) = HSR(IDUSK)
@@ -556,7 +575,7 @@ cdt added msw6 to if statement here
          If (MSW1.NE.1.and.MSW6.eq.0) then
             Do i=1,iperd
               AVP(i) = 0.61*EXP((17.27*TMIN)/(TMIN + 237.3))
-              GAMMA(i) = 0.0645
+              GAMMA_psy(i) = 0.0645
             enddo
 
           Else
@@ -571,20 +590,23 @@ C    http://www.pmel.org/HandBook/HBpage21.htm see this site for more info
 C    on using Dewpoint to calculate RH
 C     
                Do i=1, iperd
-                  SVPW(i) = 0.61*EXP((17.27*TWET(i))/(TWET(i) + 237.3))
+                  SVPW(i) = 0.61*EXP((17.27*TWET(i))
+     &              /(TWET(i) + 237.3))
 C
 C  CALCULATE THE HUMIDITY RATIO, D31, LATENT HEAT OF EVAPORATION,
 C  D32 AND THE PSYCHROMETRIC "CONSTANT"
 C
                   D31 = 0.622*(SVPW(i)/(101.3 - SVPW(i)))
                   D32 = 2500.8 - (2.37*TWET(i))
-                  GAMMA(i) = 0.62*(1.006 + (1.846*D31))
+                  GAMMA_psy(i) = 0.62*(1.006 + (1.846*D31))
      &                /((0.622 + D31)*(0.622 + D31)*D32)*101.3
 C
 C  CALCULATE ACTUAL WATER VAPOR PRESSURE
 C note that Teton's eqn is used for SVPW below
 C
-                  AVP(i) = SVPW(i) - (GAMMA(i)*(TDRY(i) - TWET(i)))
+                  AVP(i) = SVPW(i) - (GAMMA_psy(i)*(TDRY(i) 
+     &             - TWET(i)))
+                  
                   
                 Rel_Humid(i)=AVP(i)/SVPW(i)
                enddo
@@ -594,10 +616,11 @@ CDT
            if(MSW6.eq.1) then
               Do i=1,iperd
                 TMean=(TMax+TMin)/2.0
-                SVPW(i)= 0.61078*EXP((17.27*Tair(i))/(Tair(i) + 237.3))
+                SVPW(i)= 0.61078*EXP((17.27*Tair(i))
+     &              /(Tair(i) + 237.3))
                 D31 = 0.622*(SVPW(i)/(101.3 - SVPW(i)))
                 D32 = 2500.8 - (2.37*Tair(i))
-                GAMMA(i) = 0.62*(1.006 + (1.846*D31))
+                GAMMA_psy(i) = 0.62*(1.006 + (1.846*D31))
      &            /((0.622 + D31)*(0.622 + D31)*D32)*101.3
                 AVP(i)= Rel_Humid(i)*SVPW(i)
                enddo
@@ -605,7 +628,7 @@ CDT
         tAvg=TMean
           Endif !MSW1.NE.1.and.MSW6.eq.0
 CDT
-          
+C
 C  CALCULATE WATER STAURATION VAPOR PRESSURE AT AIR TEMPERATURE
 C  AND THE SLOPE OF THE RELATIONSHIP AT THAT POINT
 C note that Teten's equn is used for SVPA
@@ -908,14 +931,15 @@ C windspeed (u) was km/day here we use km/hour so you divide 1/160 by 24
 C gives you the .149
               D12 = max(1.0,2.0 - (2.0*COVER))
               If (D12.GE.1.0) D12 = 1.0
-              ESO = ((DEL(ITIME)/GAMMA(ITIME)*RNS*3600.0/(2500.8
+              ESO = ((DEL(ITIME)/GAMMA_psy(ITIME)*RNS*3600.0/(2500.8
      &     - (2.3668*TAIR(ITIME))))
      &     + (VPD(ITIME)*109.375*(1.0 + (0.149*HWIND(ITIME)*D12))))
-     &      /((DEL(ITIME)/GAMMA(ITIME)) + 1.0)
-            fac1=((DEL(ITIME)/GAMMA(ITIME)*RNS*3600.0/(2500.8
-     &     - (2.3668*TAIR(ITIME))))) /((DEL(ITIME)/GAMMA(ITIME)) + 1.0)
+     &      /((DEL(ITIME)/GAMMA_psy(ITIME)) + 1.0)
+            fac1=((DEL(ITIME)/GAMMA_psy(ITIME)*RNS*3600.0/(2500.8
+     &     - (2.3668*TAIR(ITIME))))) 
+     &       /((DEL(ITIME)/GAMMA_psy(ITIME)) + 1.0)
             fac2=(VPD(ITIME)*109.375*(1.0 + (0.149*HWIND(ITIME)*D12)))
-     &            /((DEL(ITIME)/GAMMA(ITIME)) + 1.0)
+     &            /((DEL(ITIME)/GAMMA_psy(ITIME)) + 1.0)
 
 c   IF THE NODE IS EXPOSED THEN
 c
@@ -977,10 +1001,10 @@ C
 C   CALCULATE POTENTIAL TRANSPIRATION RATE (g/m2/hour) FOR CROP ALLOWING FOR
 C   INCOMPLETE GROUND COVER
 C
-        EPO = ((DEL(ITIME)/GAMMA(ITIME)*RNC*3600.0/(2500.8
+        EPO = ((DEL(ITIME)/GAMMA_psy(ITIME)*RNC*3600.0/(2500.8
      &   - (2.3668*TAIR(ITIME))))
      &   + (VPD(ITIME)*109.375*(ROUGH +(0.149*WINDL))))
-     &   /((DEL(ITIME)/GAMMA(ITIME)) + 1.0)
+     &   /((DEL(ITIME)/GAMMA_psy(ITIME)) + 1.0)
 C
 C   CODE ADDED TO PREVENT DIVISION BY o
 C
@@ -1144,14 +1168,14 @@ c................... Gas movement
               do jjj=1,NumG
                   VarBG(i,jjj,2)=GasTransfCoeff(jjj)      ! GasTransfCoeff is the conductance of surface air layer to gas flow or rate constant of the gas exchange between the soil and the atmosphere [cm/day]
                   VarBG(i,jjj,3)=GasTransfCoeff(jjj)   
-     !                *GAIR(jjj)/ppm_to_ugGasCm3air(jjj)  ! convert the initial concentration of CO2 in [ppm]  to [ug co2 /cm3 air]!GAIR: is the atmospheric CO2 concentration [ppm], see conversion details in grid_bnd
-                  VarBG(i,jjj,1)=GAIR(jjj)/ppm_to_ugGasCm3air(jjj)           ! convert the initial concentration of CO2 in [ppm]  to [ug co2 /cm3 air]!This is if BC=4, is gas content instead of flux
+     !                *GAIR(jjj)/ugGasCm3air_to_ppm(jjj)  ! convert the initial concentration of CO2 in [ppm]  to [ug co2 /cm3 air]!GAIR: is the atmospheric CO2 concentration [ppm], see conversion details in grid_bnd
+                  VarBG(i,jjj,1)=GAIR(jjj)/ugGasCm3air_to_ppm(jjj)           ! convert the initial concentration of CO2 in [ppm]  to [ug co2 /cm3 air]!This is if BC=4, is gas content instead of flux
               Enddo
           Endif
           if (K.eq.1.or.K.eq.3.or.k.eq.6) then
               do jjj=1,NumG
                   VarBG(i,jjj,2)=GasTransfCoeff(jjj)   
-                  VarBG(i,jjj,1)= GAIR(jjj)/ppm_to_ugGasCm3air(jjj)          ! convert the atm CO2 in [ppm]  to [ug co2 /cm3 air]
+                  VarBG(i,jjj,1)= GAIR(jjj)/ugGasCm3air_to_ppm(jjj)          ! convert the atm CO2 in [ppm]  to [ug co2 /cm3 air]
               end do
           end if
       Enddo
@@ -1217,7 +1241,12 @@ cccz assign the new wind speed
 c      
       RETURN
 10    call errmes(im,il)
-      write(*,*) "Error in Weather File"
+      write(*,*) "Error in Weather File- either no more data or 
+     &  error in one of the records"
+      Stop
+ 9    Call ErrMes(im,il)
+      write(*,*) "cannot find weather file"
+      stop
       END
 C
      

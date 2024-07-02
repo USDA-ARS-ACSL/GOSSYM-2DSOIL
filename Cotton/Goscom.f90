@@ -4,14 +4,15 @@
 	! *
 	module common_block
 	!DEC$ ATTRIBUTES DLLEXPORT::/CropVar/
-	!DEC$ ATTRIBUTES DLLEXPORT::/Time_Public/
+    !DEC$ ATTRIBUTES DLLEXPORT::/Time_Public/
 	!DEC$ ATTRIBUTES DLlEXPORT::/Module_Public/
 	!DEC$ ATTRIBUTES DLLEXPORT::/Weath/
 	!DEC$ ATTRIBUTES DLLEXPORT::/bound_public/
+	!DEC$ ATTRIBUTES DLLEXPORT::/DataFilenames/    
     
     !Include 'puplant.ins'
     !Include 'public.ins'
-    !Include 'puweath.ins'
+	!Include 'puweath.ins'
     
 	DOUBLE PRECISION C1,DEC,PHI,DEGRAD,XLAT
 	LOGICAL ABEND,FULPRO,RTEXNT(40),SEND,SKPFLG,TUPF(41,21),TTUPF(41,21)
@@ -27,56 +28,81 @@
 	CHARACTER*10 MSDATE
 	CHARACTER*11 FILFRM
 	CHARACTER*12 SNAME
-	CHARACTER*18 PROFLE,ACTwea,FURwea,IRRfle,HYDfle,INTfle,PGRfle, &
-		INSfle,FNGfle,PMAfle,gcmfle
+	CHARACTER*18 PROFLE,ACTwea,FURwea,IRRfle,INTfle,PGRfle, &
+		INSfle,FNGfle,PMAfle,gcmfle,PMAFIL
 	CHARACTER*15 RUNDATE
 	Character*25 yldfle,wtsfle
 	CHARACTER*45 ROOTDIR
 	CHARACTER*51 PDESCP
 	CHARACTER*80 ERRFLE
 	CHARACTER*80 PRINTBUF
+    CHARACTER PRFNAM*20
+    Character*10 startCropSim,stopCropSim,EMERG
+    
 	CHARACTER*120 PRONAM,ACTWTH,FURWTH,PRDWTH,vldfle,gcmfil, &
 		IRRFRT,SOLHYD,INTSOL,INSCDE,FNGCDE,tablefle,binfle,solimpd, &
 		 plotfle2
 	INTEGER*2 IOUTFG,IPCLAY,IPSAND,LDEPTH,LYRSOL,MFREQ, &
 		MNDAYB,MTHIRR,NAPS,NFRQ,NUMRUN,SEASON,IFGIRR,IFGRAIN, &
 		IVARTY,WATTBL,DEFMTH,PRPMTH,PIXMTH,NODPMAP, &
-		NDMSMS,NDMSPF,NDV1MS,NDV1PF,NDV2MS,NDV2PF
-	INTEGER CO2,DAYNUM,DAZE,DEFBGN,DEFDATE,DEFDAY, &
-		EMERGE,FCODE,PIXDAY,PRPDATE,PRPDAY,POLYNA, dae
+		NDMSMS,NDMSPF,NDV1MS,NDV1PF,NDV2MS,NDV2PF,cctime
+	INTEGER  DAYNUM,DAZE,DEFBGN,DEFDATE,DEFDAY, &
+		EMERGE,FCODE,PIXDAY,PRPDATE,PRPDAY,POLYNA, dae, nshoot1,HC
 	REAL  KSAT, KSATC, KSATW, KWIDTH, LAGE, LAMDA, &
 		LAREA, LEAFCN,LEAFRS, LEAFR1, LEAFW, &
 		LEAFWT, LEFABS, LMAX, LYTRES,	WaterUptake, &
 		MH2O,MMUPN1,MMUPN2,MMUPN3,NDLAY,NEWEP,NEWES,MLAREA, &
 		MLEAFW,NOPEN,NPOOL,NR,NV,NF,NYTTYM,NYTWTF,NLOSS,ntop, pcrl1, &
-        psil_G, RS
-	REAL(4) zdum,  npool1,tspdwr, Z, wattsmc
-	Real(4)  RCH2O, INT, rootwt
-	Integer ModNum, CropRun, ActiveCropDays, ETrun,nsow  
+        psil_G, RS,avelfcn,redlfcn
+    real sumPNet, sumpnettotal,sumPNetGross 
+	REAL(4) zdum,  npool1,potenRootWgt, Z,  psiAvg
+	Real(4)  RCH2O, INT, rootwt,transsum,Yield_lbs_ac,totalDM
+	Integer ModNum, CropRun, activeCropDays,nsow,idays 
+    Integer tcount
+    Integer emergingDay
 	Parameter (NumCropD=500)
 	Double precision   CropActive(NumCropD),ETActive(NumCropD),temp
     Double precision   tnextet, etactivedays
+    Double precision   psilh(24),canopTemp(24),avgCanopTemp,StomCond(24)
+    Double precision   photoFluxDen(24)
+    parameter (Nfrutc=75)
+    Integer fertd(Nfrutc)                   !jday
+    integer IMof(Nfrutc),IDyf(Nfrutc), iyrf(Nfrutc)
+    integer WS_1, NS_1
+    Integer JCropDay
+    Real SQABZT,BOLABZT,LVSLOS!,GBZ2
+    Real BMAIN, stress_index, PPLANT
+    Real RIC(366),RH_DC(366),TDayC(366), TNytC(366), TAvgC(366),SRIc(366)
+    Real Windc(366),daylngc(366),rainc(366),t_air, t_aird
+    Real RH_DCC,TDAYCC ,TNYTCC ,TAVGCC ,SRICC ,WINDCC ,DAYLNGCC ,RAINCC 
+    Real(4) NitrogenUptake,totalNitrogenUptake
+    Real(4) CumulativeNUptakeError
+    Real(4) CurrentNUptakeError
 	!==================================
 	! Includes in common /Cropvar/
-	CHARACTER STRSIM*10,STPSIM*10,Emerg*10
-    CHARACTER*120 profile,variety,pgrhrb,pmafil,plotfle,listfle,sumryfle
+	 
 	REAL(4) POPAREA, ROWSP,POPROW, height,pcrq,NitroDemand, &
-        Psild,TotalRootWeight, cover,SPDWR,PSIM,lai, &
+        Psild,TotalRootWeight, cover,SPDWR,PSIM,lai,PSILC, &
         pcrs, pcrl, InitialRootCarbo, PCRSD,PSIL_, psildm, &
-        popslab,CONVR, ET_demand,psiavg1, tavg, Tmin_ET, IRTWT, &
-        awups, popfac
-	Integer emergingday, isGerminated, isemerged,timecount
-    Integer Navg1, nsow1
-	Double precision TimeC
-    
+        popslab,CONVR, ET_demand,ES_demand,psiAvg1, tavg, IRTWT 
+    REAL(4) awups, popfac,EOmult,SIncrSink,RN,tnyt,tday,shade
+    Real(4) NDemandError, CumulativeNDemandError
+	Integer   isGerminated, isemerged,timecount,cc
+    Integer Navg1, nsow1 
+    Character*10 Sowing, Ending
+
+     
+ 
 	!==================================
 	!Variables in Common/Time_public/
-	 Parameter (NumModD=20)
+	Parameter (NumModD=20)
 	Double precision tNext, dtMx,Time,Step, dtOpt,  dtMin, dMul1, &
 		dMul2,tTDB, tFin, tatm, timestep
+    real sowingday, endday
 	integer tinit,lInput,iter,DailyOutput,HourlyOutput, &
-		RunFlag,DailyWeather, HourlyWeather, BeginDay,  ITime, &
-		IDawn,IDusk, year,OutputSoilNo, OutputSoilYes
+		RunFlag, HourlyWeather, DailyWeather,BeginDay,iTime, &
+		IDawn,IDusk, year,OutputSoilNo, OutputSoilYes, dayofyear
+    
     
 	!===================================
 	!variables in Common/Bound_Public/
@@ -86,36 +112,64 @@
     real(4)  EO,Tpot
 	!==================================
     ! variables in common /Module public/
-   Integer nshoot
+    Integer nshoot
 	
    !=================================
    !Variables in common/weath/
-   REAL IRAV,IR,LAMDAS,LAMDAC,LATUDE,Longitude
-	REAL WATACT,WATRAT,WATPOT,RNLU
-    real (4) ri, rain,wind, psiavg
-	Integer AutoIrrigateF
-
+     
+     REAL(4) IRAV,IR,LAMDAS,LAMDAC,LATUDE,Longitude
+     REAL(4) WATACT,WATRAT,WATPOT,RNLU,wattsm,dayLng
+      real(4) RI, rain,wind, BSOLAR, ETcorr
+      real(4) BTEMP,ATEMP,ERAIN,BWIND,BIR,WINDA, NCD,JDLAST
+      real(4) CLDFAC,DEL,RINT,RNS
+      real(4) RNC,TDUSK,TDUSKY,CPREC,TAIR,VPD
+      real(4) ROUGH,RADINT, DIFINT,ROWINC,CLOUD,SHADOW,DIFWAT
+      real(4) DIRINT,hFur,QF,IFUR,GAIR,PG,Altitude
+      real(4) PAR,PARINT, AutoIrrigAmt
+    
+     Integer  MSW1,MSW2,MSW3,MSW4,MSW5,MSW6 
+	 integer MSW7,jday,CO2,NumF,NumFP,AutoIrrigateF
+     !========================================
+    !Variables for Common /DataFilenames/
+     Double precision  Starter
+     character WeatherFile*256, TimeFile*256, BiologyFile*256,&
+        ClimateFile*256, NitrogenFile*256, SoluteFile*256,&
+        ParamGasFile*256,SoilFile*256,&
+        ManagementFile*256,IrrigationFile*256,DripFile*256,&
+        WaterFile*256, WaterBoundaryFile*256,&
+        PlantGraphics*256,InitialsFile*256,  VarietyFile*256,&
+        NodeGraphics*256,ElemGraphics*256,&
+        NodeGeomFile*256,&
+        GeometryFile*256,SurfaceGraphics*256,&
+        FluxGraphics*256,MassBalanceFile*256,&
+        MassBalanceFileOut*256,LeafGraphics*256,&
+        OrganicMatterGraphics*256,&
+        RunFile*256, MassBalanceRunoffFileOut*256,&
+        MulchFile*256, MassBalanceMulchFileOut*256,&
+        listfle*256,sumryfle*256,Variety*256 
+        
+ 
 	!==================================
+     
    !from puplant.ins
-
-            Common /CropVar/  STRSIM, STPSIM,POPAREA,ROWSP,POPROW,emerg,&
-                        Emergingday,TimeC,TDay, TNyt, TAvg, wattsmc,&
-                       RN, SPDWR, PCRQ, isgerminated,cover,height,&
-                        NitroDemand,sincrsink, ET_demand, PSILD,&
-                        TotalRootWeight,isemerged, EOmult,PCRL,PCRS,&
-                        PSIM, LAI,InitialRootCarbo,PSIL_, psildm, &
-                        popslab,CONVR,psiavg1, Tmin_ET, IRTWT, timecount,&
-                        AWUPS, Nsow1, navg1, popfac,profile,variety,pgrhrb,&
-						pmafil,plotfle,listfle,sumryfle
+     Common /CropVar/  Sowing, Ending,POPAREA,ROWSP,POPROW, &
+          TDay, TNyt, TAvg, &
+         RN, SPDWR, PCRQ, isgerminated,cover,height,&
+         NitroDemand,SIncrSink, ET_demand,ES_demand, PSILD,&
+         TotalRootWeight,isemerged, EOmult,PCRL,PCRS,&
+         PSIM, LAI,InitialRootCarbo,PSIL_, psildm, &
+         popslab,CONVR,psiAvg1, IRTWT, &
+         timecount,AWUPS, Nsow1, navg1, popfac,shade,&
+         PSILC,RH_D,NDemandError, CumulativeNDemandError
 
    !from Public.ins
-      Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt, &
-          dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit, &
-          lInput,Iter,DailyOutput,HourlyOutput,RunFlag, &
-          DailyWeather,HourlyWeather,  &
-          beginDay, sowingDay, endDay, &
-          OutputSoilNo, OutPutSoilYes, Year, &
-          iTime, iDawn, iDusk, TimeStep
+    Common /time_public/tNext(NumModD),dtMx(4),Time,Step,dtOpt, &
+        dtMin, dMul1, dMul2,  tTDB(4), Tfin,tAtm, Tinit, &
+        lInput,Iter,DailyOutput,HourlyOutput,RunFlag, &
+        DailyWeather,HourlyWeather,&
+        beginDay, sowingDay, endDay,&
+        OutputSoilNo, OutPutSoilYes,Year,&
+        iTime,iDawn,iDusk,TimeStep,dayofyear
       
    !=============================================  
    !from Public.ins
@@ -135,9 +189,10 @@
           DIRINT(24),WATACT,WATRAT,WATPOT,RNLU,&
           NumF(40),NumFP,hFur(40),QF,IFUR,GAIR(NumGD),PG,&
           LATUDE,Longitude, Altitude, RI,PAR(24),&
-          PARINT(24),daylng,AutoIrrigAmt,&
+          PARINT(24),dayLng,AutoIrrigAmt,&
           AutoIrrigateF
-      
+ 
+
    !==============================================   
    !from public.ins
       Common /bound_public/ NumBP, NSurf, NVarBW,NVarBS,NVarBT,NVarBG,&
@@ -149,9 +204,24 @@
           VarBW(NumBPD,3),&
           VarBS(NumBPD,NumSD),VarBT(NumBPD,4),&
           VarBG(NumBPD,NumGD,3),EO,Tpot
-      
-    !==============================================
 
+    !==============================================
+    !from public.ins
+      Common / DataFilenames / Starter, WeatherFile, TimeFile, &
+               BiologyFile,ClimateFile, NitrogenFile, SoluteFile,&
+               ParamGasFile, SoilFile,& 
+               ManagementFile,IrrigationFile,DripFile,&
+               WaterFile, WaterBoundaryFile,& 
+               PlantGraphics,InitialsFile,VarietyFile,&
+               NodeGraphics,ElemGraphics,NodeGeomFile,&
+               GeometryFile,SurfaceGraphics,&
+               FluxGraphics, MassBalanceFile,&
+               MassBalanceFileOut, LeafGraphics,&
+               OrganicMatterGraphics,&
+               RunFile, MassBalanceRunoffFileOut,&
+               MulchFile, MassBalanceMulchFileOut,&
+               listfle,sumryfle,Variety
+    !========================================================
       COMMON/ ARCOM /ABZ,ACELLDW,ACTIRRG,ACTRAIN,ADDEDN,ADPG(20), &
                      AGE(10,40,15),AGEABZ(10,40,15),AGEBOL(10,40,15), &
                      AGEPFN(10),AGETOP,AIRDR(9),AIRDRC,	&
@@ -161,7 +231,7 @@
 	                 add60,amicron,abzb,abz0
       COMMON/ BRCOM /BD(9),BDC,BDL(40),BDI,BDRATO,BDSLOP,BDW, &          
 	                 BDELAY(10,40),BETAK(20), &
-	                 BETA(9),BETAC,BETAI,BETAW,BOLL1,BOLOSS(300000), &! boloss (366)
+	                 BETA(9),BETAC,BETAI,BETAW,BOLL1,BOLOSS(366), & 
 	                 BOLTMP(10,40,15),BOLWGT(10,40,15),BURCN,BURMIN, &
 	                 BURR1,BURRN,BSIZE(10,40,15),BLUM(366), bloom
       
@@ -234,7 +304,7 @@
 					 SESI,SESII,SITES,SITEZ,SKIPWD,	&           
 					 SLEAF,SLEAFN,SLF,SOAKN(20), SOILT(40,20), &           
 					 SPDWBO,SPDWLD,SPDWLN,SPDWRT,SPDWSQ,SPN,SOILN,SNBAL, &           
-					 SQLOSS(300000),SQUAR,SQRWT(10,40,15),SQRZ,SQWT,SROOT,	&      !SQLOSS(366)     
+					 SQLOSS(366),SQUAR,SQRWT(10,40,15),SQRZ,SQWT,SROOT,	&      
 					 SSTEM,STEMCN,STEMN,STEMRS,stemr1,STEMWT, &           
 	                 STMWT(366),SUMES,SUMEP,SUMSTRS,SUPNO3,SUPNH4, &           
 					 SUMSUB,SUBIRR,SUPF,str01,str02,str03,str04,str05,str06
@@ -310,7 +380,7 @@
 
 	common/ frtcom/ day_expfac,eve_expfac,day_lotemp,eve_lotemp, &
 	                day_hitemp,eve_hitemp,eve_water_index, &                
-					day_water_index,Bloom_tavg(365000000),Boll_tavg, &	!BLoom_tavg: array was only 365			
+					day_water_index,Bloom_tavg(365),Boll_tavg, &		
 					HeatIndex,susceptible_bolls
  
 ! *** Common block for stem development   kit 12/14/1999
@@ -330,5 +400,29 @@
 	common/ gcmcom/ igcmonth,radfactor(12),tmaxfactor(12),tminfactor(12),	&
 					rainfactor(12),relhumfactor(12),windfactor(12),			&
 					gcm(6),igcmflg
-	
+    !*** Common block for the fiber quality
+    COMMON/ FQ    /AVGLWP(10,40,15),AVGLEAFN(10,40,15),AVGK(10,40,15), & !FQ
+                     AVGP(10,40,15), SLEAFK, SLEAFP, FQL(10,40,15), &
+                     FQS(10,40,15),FQM(10,40,15),FQU(10,40,15),&
+                     FQS_Plant,FQL_Plant,FQM_Plant,FQU_Plant,&
+                     OpenBollYield(10,40,15)                                !lb/acre
+	      
+!The following are for Gasexchanger--------------------------------------------    
+      INTEGER CDayOfYear, CITIME, CIPERD
+      REAL(4) CWATTSM, CPAR, CTAIR, CCO2, CVPD, CWIND, CPSIL_,            &
+           CLATUDE, CLAREAT, CLAI
+
+      COMMON / Weather / CDayOfYear, CITIME, CIPERD, CWATTSM(24),      &
+      CPAR(24), CTAIR(24), CCO2, CVPD(24), CWIND, CPSIL_,              &
+      CLATUDE, CLAREAT, CLAI
+      REAL NRATIO, PGR, PNN, transpiration, temperature, SunlitLAI,    &
+      ShadedLAI, LightIC, transpiration_sunlitleaf,                    &
+      transpiration_shadedleaf, temp1, Ags, ARH ,StomConduc,           &
+      Evaptran        !stomConduc                           !mmol H2o m-2 s-1
+
+      COMMON / Plant / NRATIO, PGR, PNN, transpiration, temperature,   &
+      TLAI, SunlitLAI, ShadedLAI, LightIC,                             &
+      transpiration_sunlitleaf, transpiration_shadedleaf,              & 
+      temp1, Ags, ARH, stomConduc, Evaptran  
+ !-----------------------------------------------------------------------------------     
 	end module common_block

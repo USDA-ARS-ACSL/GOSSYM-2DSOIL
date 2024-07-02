@@ -13,7 +13,7 @@
     !temperatures must be between 13 and 37oc--will not extrapolate beyond limits
     !           *********************  warning  **********************
     !
-    !             this is the application version of mafes for guics
+    !       Modified by Sahila Beegum, Dennis Timlin at USDA ARS ACSL 
     !
     !*****************************************************************************
    
@@ -103,7 +103,7 @@
             canopTemp(iTime)=temperature            !Leaf temperature form Gas Exchange
             StomCond(iTime)=stomConduc              !Stomatal conductance: mmol H2o m-2 s-1 ( for a day , need to average)
             photoFluxDen(iTime)=par(iTime) * 4.55   !conversion from PAR in W m-2 to umol s-1 m-2.Photosynthetic flux density: umol/m2/sec
-            call Add_output1                        !For writing additional output to cotton.sum file
+#            call Add_output1                        !For writing additional output to cotton.sum file
             tcount=tcount+1
             if (tcount.gt.ciPerd)  tcount=1
         end if

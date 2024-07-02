@@ -35,10 +35,10 @@
       RNO=(RS-LAMDA*RS)
 
 ! *** TDRY & TWET = DRY AND WET BULB TEMPERATURES.
-       IF(TMIN_ET.LE.0) TMIN = 1.0
+       IF(TMIN.LE.0) TMIN = 1.0
       TDRY = TAVG
       VPO = VP(TDRY)
-      TWET = TMIN_ET  !temperature in degree C
+      TWET = TMIN !temperature in degree C
 
 ! *** eot=POTENTIAL EVAPORATION RATE ABOVE CANOPY (MM/DAY)
 ! *** MODIFIED PENMAN EQ.
@@ -112,7 +112,7 @@
 
 !       E = ES + EP
        AVGPSI = -1. * (PSIAVG)   !Average soil water potential (bars, positive value); equal to PSIAVG but opposite in sign.
-   
+      IF(AVGPSI.LT.-7.0) AVGPSI = -7.0
       IF(AVGPSI.GT.0.8) AVGPSI = 0.8
       !RN = RI*.71536-26.
       RNT =  RI/41868*.71536-26.
@@ -128,12 +128,15 @@
        - 54.6600986*TAVG - 19.46508431 - 0.0010226*RNT*RNT +	&
        1.0153007*TAVG*TAVG + .29775978 + 0.0293687*RNT*TAVG	&
        - .4206856*TAVG
-      RFEP = RFEPN/RFEPD*CALBRT(25)
+      RFEP = RFEPN/RFEPD*1!CALBRT(25)
       IF(RFEP.LT.(0.2*LAI/2.0)) RFEP = 0.2 * LAI/2.0
       IF(RFEP.LT.0.2) RFEP = 0.2
       IF(RFEP.GT.1.0) RFEP = 1.0
       EP = EP * RFEP    !(mm/cm2/day)
-      Et_demand= (Ep*rowsp*eomult)/10   !mm/cm2/day to gram/slab/day
+                 !   Et_demand= (Ep*rowsp*eomult)/10   !mm/cm2/day to gram/slab/day
+             !     Write(*,*) ES,EP
+      ES_demand=ES
+        
       RETURN
       END 
 
