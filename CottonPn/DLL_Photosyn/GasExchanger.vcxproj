@@ -153,6 +153,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -164,8 +166,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(ProjectDir)$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -218,7 +220,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>echo f | xcopy /y "$(TargetPath)" "$(SolutionDir)2Dsoil\Debug\$(TargetFileName)"</Command>
+      <Command>echo f | xcopy /y "$(ProjectDir)$(Platform)\$(Configuration)\$(TargetFileName)" "$(SolutionDir)2Dsoil\$(Platform)\$(Configuration)\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
@@ -288,7 +290,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>echo f | xcopy /y "$(TargetPath)" "$(SolutionDir)2DSOIL\Release\$(TargetFileName)"</Command>
+      <Command>echo f | xcopy /y "$(ProjectDir)$(Platform)\$(Configuration)\$(TargetFileName)" "$(SolutionDir)2Dsoil\$(Platform)\$(Configuration)\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
